@@ -28,19 +28,23 @@ namespace Kamban.Views
     {
     
         public LogViewModel Log { get; set; }
-        public ObservableCollection<ILogEntry> LogEntries { get; }
+        public ObservableCollection<ILogEntry> LogEntries { get; set; }
 
         public LogView(LogViewModel viewModel)
         {
             InitializeComponent();
             ViewModel = viewModel;
             DataContext = ViewModel;
+            viewModel.Title = "ABC: ";
+             
 
             Log = (LogViewModel) ViewModel;
+            
             LogEntries = Log.LogEntries;
 
 
-           // LogGrid.ItemsSource = ;
+           LogGrid.ItemsSource =  Log.LogEntries;
+            LogGrid.UpdateLayout();
         }
 
 

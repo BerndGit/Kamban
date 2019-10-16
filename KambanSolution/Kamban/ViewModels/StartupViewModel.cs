@@ -130,7 +130,8 @@ namespace Kamban.ViewModels
             {
                 shell.ShowView<LogView>(
                     viewRequest: new LogViewRequest { ViewId = LogViewModel.LogViewId,
-                    Log = new LogViewModel()},
+                        //        Log = new LogViewModel()
+                    },
                     options: new UiShowOptions() { Title = "Log View", CanClose = false });
             });
 
@@ -237,6 +238,10 @@ namespace Kamban.ViewModels
             shell.ShowView<BoardView>(
                 viewRequest: new BoardViewRequest { ViewId = title, Box = box },
                 options: new UiShowOptions { Title = title });
+
+            LogViewRequest lvr = new LogViewRequest() { ViewId = "[LOG] " + title, Box = box };
+            shell.ShowView<LogView>( viewRequest: lvr,
+                   options: new UiShowOptions { Title = "[LOG] " + title });
 
             return true;
         }
