@@ -13,6 +13,7 @@ using AutoMapper;
 using DynamicData;
 using Kamban.Core;
 using Kamban.ViewModels.Core;
+using Kamban.ViewRequests;
 using Kamban.Views;
 using MahApps.Metro.Controls.Dialogs;
 using Monik.Common;
@@ -50,6 +51,8 @@ namespace Kamban.ViewModels
         public ReactiveCommand<Unit, Unit> PrintCommand { get; private set; }
         public ReactiveCommand<Unit, Unit> ShowStartupCommand { get; private set; }
         public ReactiveCommand<Unit, Unit> ExitCommand { get; private set; }
+        public ReactiveCommand<Unit, Unit> NewLogWindowCommand { get; private set; }
+
 
         [Reactive] public string GetStarted { get; set; }
         [Reactive] public string Basement { get; set; }
@@ -122,6 +125,14 @@ namespace Kamban.ViewModels
             });
 
             ExitCommand = ReactiveCommand.Create(() => App.Current.Shutdown());
+
+            NewLogWindowCommand = ReactiveCommand.Create(() =>
+            {
+                shell.ShowView<LogView>(
+                    viewRequest: new LogViewRequest { ViewId = LogViewModel.LogViewId,
+                    Log = new LogViewModel()},
+                    options: new UiShowOptions() { Title = "Log View", CanClose = false });
+            });
 
             Pinned = appConfig.RecentObservable
                 .Filter(x => x.Pinned);
@@ -251,6 +262,8 @@ namespace Kamban.ViewModels
                 .SetHotKey(ModifierKeys.Control, Key.P);
 
             shell.AddGlobalCommand("File", "Show Startup", nameof(ShowStartupCommand), this, true);
+
+            shell.AddGlobalCommand("File", "New Log Window", nameof(NewLogWindowCommand), this, true);
 
             shell.AddGlobalCommand("File", "Exit", nameof(ExitCommand), this);
 
