@@ -73,6 +73,9 @@ namespace Kamban
                 .SingleInstance();
 
             builder.RegisterType<BoxViewModel>();
+        
+
+
 
             ConfigureSingleView<StartupViewModel, StartupView>(builder);
             ConfigureView<WizardViewModel, WizardView>(builder);

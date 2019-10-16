@@ -10,8 +10,8 @@ namespace Kamban.ViewRequests
 {
     class LogViewRequest : ViewRequest
     {
+  //      public LogViewModel Log { get; set; }
         public BoxViewModel Box { get; set; }
-        public LogViewModel Log { get; set; }
 
         public LogViewRequest()
         {
