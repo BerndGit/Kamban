@@ -23,5 +23,6 @@ namespace Kamban.ViewModels.Core
         int RowId { get; set; }
         int CloumnId { get; set; }
         int BoardId { get; set; }
+        int CardId { get; set; }
     }
 }
