@@ -28,10 +28,11 @@ namespace Kamban.Views
     {
     
         public LogViewModel Log { get; set; }
-        public ObservableCollection<ILogEntry> LogEntries { get; set; }
 
         public LogView(LogViewModel viewModel)
         {
+
+            System.Windows.MessageBox.Show("LogView(LogViewModel viewModel)");
             InitializeComponent();
             ViewModel = viewModel;
             DataContext = ViewModel;
@@ -39,12 +40,10 @@ namespace Kamban.Views
              
 
             Log = (LogViewModel) ViewModel;
-            
-            LogEntries = Log.LogEntries;
+
+            LogGrid.ItemsSource = Log.LogEntries;
 
 
-           LogGrid.ItemsSource =  Log.LogEntries;
-            LogGrid.UpdateLayout();
         }
 
 
@@ -65,7 +64,11 @@ namespace Kamban.Views
 
         public void Configure(UiShowOptions options)
         {
+            System.Windows.MessageBox.Show("Configure(UiShowOptions options)");
+
             ViewModel.FullTitle = options.Title;
+
+       //     LogGrid.ItemsSource = Log.LogEntries;
         }
     }
 }

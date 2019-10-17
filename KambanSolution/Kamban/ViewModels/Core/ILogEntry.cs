@@ -8,11 +8,13 @@ namespace Kamban.ViewModels.Core
 {
     public interface ILogEntry
     {
+        int Id { get; set; }
+
         DateTime Time { get; set; }
         String Source { get; set; }
 
         String Board { get; set; }
-        String Cloumn { get; set; }
+        String Column { get; set; }
         String Row { get; set; }
         String Property { get; set; }
         String OldValue { get; set; }
@@ -21,7 +23,7 @@ namespace Kamban.ViewModels.Core
         String Note { get; set; }
 
         int RowId { get; set; }
-        int CloumnId { get; set; }
+        int ColumnId { get; set; }
         int BoardId { get; set; }
         int CardId { get; set; }
     }

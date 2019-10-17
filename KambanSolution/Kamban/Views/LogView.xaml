@@ -15,7 +15,7 @@
     
     
     <Grid>
-        <DataGrid Margin="5,5,5,5" x:Name="LogGrid" IsReadOnly="False">  <!--ItemsSource="{Binding DataContext.LogEntries ,Mode=TwoWay, UpdateSourceTrigger=Default}" --> 
+        <DataGrid Margin="5,5,5,5" x:Name="LogGrid" IsReadOnly="False"> <!--ItemsSource="{Binding LogEnt,Mode=TwoWay, UpdateSourceTrigger=Default}" --> 
             
             
         </DataGrid>

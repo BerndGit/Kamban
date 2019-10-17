@@ -8,5 +8,6 @@ namespace Kamban.Repository.Models
         public List<Row> Rows { get; set; } = new List<Row>();
         public List<Column> Columns { get; set; } = new List<Column>();
         public List<Card> Cards { get; set; } = new List<Card>();
+        public List<LogEntry> Log { get; set; } = new List<LogEntry>();
     }
 }
