@@ -15,12 +15,13 @@ namespace Kamban.Repository.LiteDb
                 {typeof(Row), "rows"},
                 {typeof(Column), "columns"},
                 {typeof(Board), "boards"},
-                {typeof(Card), "issues"}
+                {typeof(Card), "issues"},
+                {typeof(LogEntry), "logentries"}
             };
 
         public static LiteCollection<T> GetCollectionByType<T>(this LiteDatabase db)
         {
-            return db.GetCollection<T>(CollectionNameByType[typeof(T)]);
+           return db.GetCollection<T>(CollectionNameByType[typeof(T)]);    
         }
 
         public static Task<T> UpsertAsync<T>(this LiteDatabase database, T document)

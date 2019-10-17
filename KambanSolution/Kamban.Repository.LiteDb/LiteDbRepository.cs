@@ -21,13 +21,16 @@ namespace Kamban.Repository.LiteDb
             var rows = db.GetAllAsync<Row>();
             var columns = db.GetAllAsync<Column>();
             var boards = db.GetAllAsync<Board>();
+            var Log = db.GetAllAsync<LogEntry>();
+         
 
             return new Box
             {
                 Boards = await boards,
                 Cards = await cards,
                 Columns = await columns,
-                Rows = await rows
+                Rows = await rows,
+                Log = await Log
             };
         }
 
@@ -141,6 +144,11 @@ namespace Kamban.Repository.LiteDb
         public void Dispose()
         {
             db?.Dispose();
+        }
+
+        public Task<LogEntry> AddLogEntry(LogEntry entr)
+        {
+            return db.UpsertAsync(entr);            
         }
     } //end of class
 }
