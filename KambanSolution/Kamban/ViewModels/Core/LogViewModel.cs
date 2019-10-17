@@ -28,39 +28,13 @@ namespace Kamban.ViewModels.Core
 
             Box = ((LogViewRequest)viewRequest).Box;
 
-            LogEntries.Add(
-                new LogEntry()
-                {
-                    Time = new DateTime(),
-                    CloumnId = 1,
-                    Note = "Hallo"
-                });
-
-            LogEntries.Add(
-                new LogEntry()
-                {
-                    Time = new DateTime(),
-                    CloumnId = 1,
-                    Note = "XXXX"
-                });
-
-            LogEntries.Add(
-                new LogEntry()
-                {
-                    Time = new DateTime(),
-                    CloumnId = 2,
-                    Note = "Du"
-                });
-
-
-
             var CardChanges = Box.Cards.Connect();
             CardChanges.WhereReasonsAre(ListChangeReason.Add)
                 .Subscribe(c =>
                 {
                     foreach (Change<CardViewModel> ccvm in c)
                     {
-
+                        LogCardChanges(ccvm.Item.Current);
                         LogEntries.Add(
                             new LogEntry()
                             {
@@ -80,6 +54,8 @@ namespace Kamban.ViewModels.Core
                     foreach (Change<CardViewModel> ccvm in c)
                     {
                         foreach (CardViewModel cvm in ccvm.Range.ToList())
+                        {
+                        LogCardChanges(cvm);
                         LogEntries.Add(
                             new LogEntry()
                             {
@@ -90,6 +66,7 @@ namespace Kamban.ViewModels.Core
                                 Note = cvm.Header
 
                             });
+                        }
                     }
                 });
 
@@ -131,11 +108,75 @@ namespace Kamban.ViewModels.Core
                  }
              });
 
+
+
+
+
+       
             // throw new NotImplementedException();
         }
 
 
+        public void LogCardChanges(CardViewModel cvm)
+        {
+            List<String> notLogging = new List<string>()        {      "Modified", "Order"     };
+
+            cvm.Changing.Subscribe(c =>
+            {
+                if (notLogging.Contains(c.PropertyName)) return;
+
+                LogEntries.Add(
+                            new LogEntry()
+                            {
+                                Time = DateTime.Now,
+                                Property = c.PropertyName,
+                                OldValue = cvm.GetType().GetProperty(c.PropertyName).GetValue(cvm, null)?.ToString(),
+
+                                CloumnId = cvm.ColumnDeterminant,
+                                RowId = cvm.RowDeterminant,
+                                BoardId = cvm.BoardId,
+                                CardId = cvm.Id,
+
+                                Source = "Card Changed",
+                               
+
+                            }); ; ;
+
+
+            });
+
+
+            cvm.Changed.Subscribe(c =>
+                 {
+                     if (notLogging.Contains(c.PropertyName)) return;
+
+                     var Entry = LogEntries.Where(x => { return (x.Property == c.PropertyName) & (x.CardId == cvm.Id); }).Last();
+                     if (Entry!=null)
+                     { 
+                         Entry.NewValue = cvm.GetType().GetProperty(c.PropertyName).GetValue(cvm, null)?.ToString();
+                         Entry.Note = "Property [" + c.PropertyName + "]: " + Entry.OldValue + " -> " + Entry.NewValue;
+
+                         Entry.Cloumn = Box.Columns.Items.Where(x => { return (x.Id == Entry.CloumnId); }).First().Name;
+                         Entry.Row = Box.Rows.Items.Where(x => { return (x.Id == Entry.RowId); }).First().Name;
+                         Entry.Board = Box.Rows.Items.Where(x => { return (x.Id == Entry.BoardId); }).First().Name;
+
+                     }
+
+                     ;
+
+                 }); 
+
+
+         
+
+            
+               
+        }
+
+
     }
+
+ 
 
   
     

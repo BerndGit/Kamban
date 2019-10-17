@@ -17,6 +17,8 @@ namespace Kamban.ViewModels.Core
         public string OldValue { get; set; }
         public string NewValue { get; set; }
         public string Note { get; set; }
+
+        public int CardId { get; set; }
         public int RowId { get; set; }
         public int CloumnId { get; set; }
         public int BoardId { get; set; }
