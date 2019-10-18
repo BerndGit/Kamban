@@ -26,5 +26,7 @@ namespace Kamban.ViewModels.Core
         int ColumnId { get; set; }
         int BoardId { get; set; }
         int CardId { get; set; }
+
+        bool Automatic { get; set; }
     }
 }

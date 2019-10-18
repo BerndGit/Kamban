@@ -11,7 +11,8 @@
              xmlns:mah="http://metro.mahapps.com/winfx/xaml/controls"
              xmlns:mykanban="clr-namespace:Kamban.MatrixControl"
              xmlns:viewModels="clr-namespace:Kamban.ViewModels.Core"
-             d:DataContext="{d:DesignInstance viewModels:LogViewModel}">
+             d:DataContext="{d:DesignInstance viewModels:LogViewModel}"
+             Name="MainUserControl">
     
     
     <Grid>

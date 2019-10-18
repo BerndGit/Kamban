@@ -51,7 +51,7 @@ namespace Kamban.ViewModels
         public ReactiveCommand<Unit, Unit> PrintCommand { get; private set; }
         public ReactiveCommand<Unit, Unit> ShowStartupCommand { get; private set; }
         public ReactiveCommand<Unit, Unit> ExitCommand { get; private set; }
-        public ReactiveCommand<Unit, Unit> NewLogWindowCommand { get; private set; }
+      
 
 
         [Reactive] public string GetStarted { get; set; }
@@ -126,14 +126,14 @@ namespace Kamban.ViewModels
 
             ExitCommand = ReactiveCommand.Create(() => App.Current.Shutdown());
 
-            NewLogWindowCommand = ReactiveCommand.Create(() =>
+     /*       NewLogWindowCommand = ReactiveCommand.Create(() =>
             {
                 shell.ShowView<LogView>(
                     viewRequest: new LogViewRequest { ViewId = LogViewModel.LogViewId,
-                        //        Log = new LogViewModel()
+                       
                     },
                     options: new UiShowOptions() { Title = "Log View", CanClose = false });
-            });
+            }); */
 
             Pinned = appConfig.RecentObservable
                 .Filter(x => x.Pinned);
@@ -239,9 +239,9 @@ namespace Kamban.ViewModels
                 viewRequest: new BoardViewRequest { ViewId = title, Box = box },
                 options: new UiShowOptions { Title = title });
 
-            LogViewRequest lvr = new LogViewRequest() { ViewId = "[LOG] " + title, Box = box };
-            shell.ShowView<LogView>( viewRequest: lvr,
-                   options: new UiShowOptions { Title = "[LOG] " + title });
+             
+         //   shell.ShowView<LogView>( viewRequest: new LogViewRequest() { ViewId = "[LOG] " + title, Box = box };,
+         //          options: new UiShowOptions { Title = "[LOG] " + title });
 
             return true;
         }
@@ -267,8 +267,6 @@ namespace Kamban.ViewModels
                 .SetHotKey(ModifierKeys.Control, Key.P);
 
             shell.AddGlobalCommand("File", "Show Startup", nameof(ShowStartupCommand), this, true);
-
-            shell.AddGlobalCommand("File", "New Log Window", nameof(NewLogWindowCommand), this, true);
 
             shell.AddGlobalCommand("File", "Exit", nameof(ExitCommand), this);
 

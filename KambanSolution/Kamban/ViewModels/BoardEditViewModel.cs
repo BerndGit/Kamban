@@ -17,6 +17,7 @@ using Monik.Common;
 using ReactiveUI;
 using ReactiveUI.Fody.Helpers;
 using Ui.Wpf.Common;
+using Ui.Wpf.Common.ShowOptions;
 using Ui.Wpf.Common.ViewModels;
 using CardsObservableType = System.IObservable<DynamicData.IChangeSet<Kamban.ViewModels.Core.ICard>>;
 
@@ -81,6 +82,8 @@ namespace Kamban.ViewModels
         public ReactiveCommand<Unit, Unit> RenameBoardCommand { get; set; }
         [Reactive] public ReactiveCommand<Unit, Unit> DeleteBoardCommand { get; set; }
         public ReactiveCommand<object, Unit> SelectBoardCommand { get; set; }
+
+        public ReactiveCommand<object, Unit> ShowLogViewCommand { get; set; }
 
         public ReactiveCommand<Unit, Unit> ToggleShowCardIdsCommand { get; set; }
         public ReactiveCommand<Unit, Unit> ToggleSwimLaneViewCommand { get; set; }
@@ -164,6 +167,13 @@ namespace Kamban.ViewModels
             });
 
             RenameBoardCommand = ReactiveCommand.CreateFromTask(RenameBoardCommandExecute);
+
+            ShowLogViewCommand = ReactiveCommand.Create((object mi) =>
+            {
+                 shell.ShowView<LogView>(viewRequest: new LogViewRequest() { ViewId = "[LOG] " + Box.Title, Box = Box },
+                 options: new UiShowOptions { Title = "[LOG] " + Box.Title });
+            }
+            );
 
             SelectBoardCommand = ReactiveCommand
                 .Create((object mi) =>
@@ -353,6 +363,7 @@ namespace Kamban.ViewModels
                 .ToList()
                 .ForEach(x => x.MenuCommand = shell.AddInstanceCommand("Boards", x.Name, nameof(SelectBoardCommand), this));
 
+            shell.AddInstanceCommand("View", "Show Log View", nameof(ShowLogViewCommand), this);
 
             mon.LogicVerbose($"{nameof(BoardEditViewModel)}.{nameof(Initialize)} finished");
         }

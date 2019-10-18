@@ -30,14 +30,28 @@ namespace Kamban.ViewModels.Core
             Box = ((LogViewRequest)viewRequest).Box;
 
             this.LogEntries.Clear();
-            Box.LogEntries.ToList().ForEach(ent => this.LogEntries.Add(ent));
+            Box.LogEntries.Items.ToList().ForEach(ent => this.LogEntries.Add(ent));
 
-            Box.LogEntries.CollectionChanged += BoxLogChanged;
+            // Fixme
+            Box.LogEntries.Connect().Subscribe(cl =>   
+            {
+                this.LogEntries.Clear();
+                Box.LogEntries.Items.ToList().ForEach(ent => this.LogEntries.Add(ent));
+            });
+
+            Title = "Log: " + Box.Title;
+       
+
+     
             
         }
 
         private void BoxLogChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
+
+            this.LogEntries.Clear();
+            Box.LogEntries.Items.ToList().ForEach(ent => this.LogEntries.Add(ent));
+            /*
             if (e.NewItems!=null)
             {
                 foreach (ILogEntry ent in e.NewItems)
@@ -52,7 +66,7 @@ namespace Kamban.ViewModels.Core
                 {
                     this.LogEntries.Remove(ent);
                 };
-            }
+            } */
 
  
         }
