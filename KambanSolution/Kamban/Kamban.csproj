@@ -41,6 +41,10 @@
     <Compile Update="Properties\Resources.Designer.cs" DesignTime="True" AutoGen="True" DependentUpon="Resources.resx" />
 
     <None Update="Properties\Settings.settings" Generator="SettingsSingleFileGenerator" LastGenOutput="Settings.Designer.cs" />
+
+    <None Update="Views\LogView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </None>
     <Compile Update="Properties\Settings.Designer.cs" DesignTime="True" AutoGen="True" DependentUpon="Settings.settings" />
 
 
@@ -49,7 +53,6 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Page Include="**\*.xaml" SubType="Designer" Generator="MSBuild:UpdateDesignTimeXaml" Exclude="App.xaml" />
-    <None Remove="Views\LogView.xaml" />
     <Compile Update="**\*.xaml.cs" SubType="Code" DependentUpon="%(Filename)" />
 
     <Content Include="FodyWeavers.xml" />
@@ -73,10 +76,5 @@
     <ProjectReference Include="..\Kamban.Repository.LiteDb\Kamban.Repository.LiteDb.csproj" />
     <ProjectReference Include="..\Kamban.Repository.Redmine\Kamban.Repository.Redmine.csproj" />
     <ProjectReference Include="..\Kamban.Templates\Kamban.Templates.csproj" />
-  </ItemGroup>
-  <ItemGroup>
-    <Page Update="Views\LogView.xaml">
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
   </ItemGroup>
 </Project>
