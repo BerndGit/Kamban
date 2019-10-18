@@ -73,7 +73,7 @@ namespace Kamban
                 .SingleInstance();
 
             builder.RegisterType<BoxViewModel>();
-        
+            builder.RegisterType<LogEntryViewModel>();
 
 
 
@@ -84,7 +84,10 @@ namespace Kamban
             ConfigureView<ExportViewModel, ExportView>(builder);
             ConfigureView<ImportViewModel, ImportView>(builder);
             ConfigureView<ImportSchemeViewModel, ImportSchemeView>(builder);
+            
+
             ConfigureView<LogViewModel, LogView>(builder);
+
 
             return builder.Build();
         }

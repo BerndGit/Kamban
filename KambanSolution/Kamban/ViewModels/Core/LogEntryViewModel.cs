@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Kamban.ViewModels.Core
 {
-    public class LogEntry : ILogEntry
+    public class LogEntryViewModel : ILogEntry
     {
         public int Id { get; set; }
 
@@ -24,6 +24,7 @@ namespace Kamban.ViewModels.Core
         public int RowId { get; set; }
         public int ColumnId { get; set; }
         public int BoardId { get; set; }
-        
-    }
+
+        public bool Automatic { get; set; } = true;
+}
 }

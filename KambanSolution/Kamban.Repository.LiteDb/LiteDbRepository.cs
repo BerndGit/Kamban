@@ -23,8 +23,7 @@ namespace Kamban.Repository.LiteDb
             var boards = db.GetAllAsync<Board>();
             var Log = db.GetAllAsync<LogEntry>();
          
-
-            return new Box
+            Box box = new Box
             {
                 Boards = await boards,
                 Cards = await cards,
@@ -32,6 +31,8 @@ namespace Kamban.Repository.LiteDb
                 Rows = await rows,
                 Log = await Log
             };
+
+            return box;
         }
 
         public async Task<BoxScheme> LoadScheme()
