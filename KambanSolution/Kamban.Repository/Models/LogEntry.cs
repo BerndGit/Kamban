@@ -8,7 +8,7 @@ namespace Kamban.Repository.Models
 {
     public class LogEntry 
     {
-        [BsonId] public int Id { get; set; }
+        public int Id { get; set; }
 
         public DateTime Time { get; set; }
         public String Source { get; set; }

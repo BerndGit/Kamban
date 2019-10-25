@@ -10,11 +10,14 @@ namespace Kamban.Repository
         Task<Row> CreateOrUpdateRow(Row row);
         Task<Column> CreateOrUpdateColumn(Column column);
         Task<Board> CreateOrUpdateBoard(Board board);
-        Task<LogEntry> AddLogEntry(LogEntry board);
+        Task<LogEntry> CreateOrUpdateLogEntry(LogEntry board);
 
         Task DeleteRow(int rowId);
         Task DeleteColumn(int columnId);
         Task DeleteCard(int cardId);
         Task DeleteBoard(int boardId);
+
+        Task RemoveLogEntry(int EntryId);
+
     }
 }

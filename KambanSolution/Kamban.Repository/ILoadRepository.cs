@@ -15,5 +15,6 @@ namespace Kamban.Repository
         Task<List<Row>> LoadSchemeRows(int[] boardIds = null);
 
         Task<List<Card>> LoadCards(CardFilter filter);
+      
     }
 }
