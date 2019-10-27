@@ -16,11 +16,66 @@
     
     
     <Grid>
-        <DataGrid Margin="5,5,5,5" x:Name="LogGrid" IsReadOnly="False"> <!--ItemsSource="{Binding LogEnt,Mode=TwoWay, UpdateSourceTrigger=Default}" --> 
+        <Grid.RowDefinitions>
+            <RowDefinition x:Name="Filters" Height="50"/>
+            <RowDefinition x:Name="DataGrid" Height="*"/>
+        </Grid.RowDefinitions>
+   
+        
+            <WrapPanel  Grid.Row="0" Height="50">
+            <CheckBox   Content="Check me"/>
+            <CheckBox  Content="Check me too"/>
+        </WrapPanel>    
+        
+
+        <!-- Data Grid -->
+        <DataGrid Grid.Row="1"
+                  Margin="5,5,5,5" 
+                  x:Name="LogGrid" 
+                  IsReadOnly="False" 
+                  VerticalAlignment="Top"                
+                  HeadersVisibility="All" 
+                  GridLinesVisibility="Horizontal" 
+                  AutoGenerateColumns="False"
+                  CanUserAddRows="True"
+                  >
+            <!-- DataGrid.RowStyle>
+                <Style TargetType="DataGridRow">
+                    <Setter Property="Background" Value="{Binding Automatic}" />
+                </Style>
+            </ -->
+            
+
+
+            <DataGrid.Columns>
+                <mah:DataGridNumericUpDownColumn Header="Id" Binding="{Binding Id}" IsReadOnly="True"/>
+
+                <DataGridCheckBoxColumn Header="Automatic" Binding="{Binding Automatic}" IsReadOnly="True"/>
+
+                <DataGridTemplateColumn Header="Time">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <TextBlock Text="{Binding Time}"/>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                    <DataGridTemplateColumn.CellEditingTemplate>
+                        <DataTemplate>
+                            <mah:DateTimePicker SelectedDate="{Binding Time}" IsReadOnly="{Binding Automatic}" />
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellEditingTemplate>
+                </DataGridTemplateColumn>
+                
+                <DataGridTextColumn Header="Time" Binding="{Binding Time}" />
+                
+                <DataGridTextColumn Header="Column" Binding="{Binding Column}" />
+                <DataGridTextColumn Header="Row" Binding="{Binding Row}" />
+                <DataGridTextColumn Header="Topic" Binding="{Binding Topic}" />
+                <DataGridTextColumn Header="Note" Binding="{Binding Note}" Width="*" />
+            </DataGrid.Columns>
             
             
         </DataGrid>
-        
+
 
 
     </Grid>

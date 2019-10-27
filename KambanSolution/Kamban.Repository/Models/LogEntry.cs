@@ -11,10 +11,10 @@ namespace Kamban.Repository.Models
         public int Id { get; set; }
 
         public DateTime Time { get; set; }
-        public String Source { get; set; }
+        public String Topic { get; set; }
 
         public String Board { get; set; }
-        public String Cloumn { get; set; }
+        public String Column { get; set; }
         public String Row { get; set; }
         public String Property { get; set; }
         public String OldValue { get; set; }
