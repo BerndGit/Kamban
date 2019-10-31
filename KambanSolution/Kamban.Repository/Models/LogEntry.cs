@@ -23,7 +23,7 @@ namespace Kamban.Repository.Models
         public String Note { get; set; }
 
         public int RowId { get; set; }
-        public int CloumnId { get; set; }
+        public int ColumnId { get; set; }
         public int BoardId { get; set; }
         public int CardId { get; set; }
 

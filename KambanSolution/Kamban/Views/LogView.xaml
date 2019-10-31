@@ -11,48 +11,110 @@
              xmlns:mah="http://metro.mahapps.com/winfx/xaml/controls"
              xmlns:mykanban="clr-namespace:Kamban.MatrixControl"
              xmlns:viewModels="clr-namespace:Kamban.ViewModels.Core"
-             d:DataContext="{d:DesignInstance viewModels:LogViewModel}"
-             Name="MainUserControl">
-    
-    
+            d:DataContext="{d:DesignInstance viewModels:LogViewModel}"
+            >
+
+
+
+
+    <!--UserControl.Resources>
+        <ResourceDictionary Source="WpfResources/TemplatesDictionary.xaml"/>
+    </ -->
+
+
     <Grid>
+
+
         <Grid.RowDefinitions>
-            <RowDefinition x:Name="Filters" Height="50"/>
+            <RowDefinition x:Name="Controls" Height="Auto" />
             <RowDefinition x:Name="DataGrid" Height="*"/>
         </Grid.RowDefinitions>
-   
-        
-            <WrapPanel  Grid.Row="0" Height="50">
-            <CheckBox   Content="Check me"/>
-            <CheckBox  Content="Check me too"/>
-        </WrapPanel>    
-        
 
-        <!-- Data Grid -->
-        <DataGrid Grid.Row="1"
-                  Margin="5,5,5,5" 
-                  x:Name="LogGrid" 
-                  IsReadOnly="False" 
-                  VerticalAlignment="Top"                
-                  HeadersVisibility="All" 
-                  GridLinesVisibility="Horizontal" 
-                  AutoGenerateColumns="False"
-                  CanUserAddRows="True"
-                  >
-            <!-- DataGrid.RowStyle>
-                <Style TargetType="DataGridRow">
-                    <Setter Property="Background" Value="{Binding Automatic}" />
-                </Style>
-            </ -->
+        <StackPanel Grid.Row="0" HorizontalAlignment="Stretch" Orientation="Vertical" >
+        <Expander Header="Filter Data" MaxHeight="150" VerticalAlignment="Top" HorizontalAlignment="Stretch">
+            <WrapPanel>
+                <Label Target="{Binding ElementName=cobRows}" VerticalAlignment="Center" Margin="5">Row</Label>
+                
+                <ComboBox 
+                x:Name="cobRows"
+                Margin="5,5,5,5" 
+                ItemsSource="{Binding AvailableRows}"
+                SelectedItem="{Binding SelectedRow}"
+                Width="100"
+                Height="30">
+                    <ComboBox.ItemTemplate>
+                        <DataTemplate>
+                            <TextBlock Text="{Binding Name}"/>
+                        </DataTemplate>
+                    </ComboBox.ItemTemplate>
+                </ComboBox>
+                
+                <Label Target="{Binding ElementName=cobCol}" VerticalAlignment="Center" Margin="5">Column</Label>
+                <ComboBox 
+                x:Name="cobCol"
+                Margin="5,5,5,5" 
+                ItemsSource="{Binding AvailableColumns}"
+                SelectedItem="{Binding SelectedColumn}"
+                Width="100"
+                Height="30">
+                    <ComboBox.ItemTemplate>
+                        <DataTemplate>
+                            <TextBlock Text="{Binding Name}"/>
+                        </DataTemplate>
+                    </ComboBox.ItemTemplate>
+                </ComboBox>
+
+                <Label Target="{Binding ElementName=cobCard}" VerticalAlignment="Center" Margin="5">Card</Label>
+                    <ComboBox 
+                x:Name="cobCard"
+                Margin="5,5,5,5" 
+                ItemsSource="{Binding AvailableCards}"
+                SelectedItem="{Binding SelectedCard}"
+                Width="100"
+                Height="30">
+                        <ComboBox.ItemTemplate>
+                            <DataTemplate>
+                                <StackPanel Orientation="Horizontal">
+                                    <TextBlock Text="#"/>
+                                    <TextBlock Text="{Binding Id}"/>
+                                    <TextBlock Text=": "/>
+                                    <TextBlock Text="{Binding Header}"/>
+                                </StackPanel>
+                            </DataTemplate>
+                            
+                        </ComboBox.ItemTemplate>
+                    </ComboBox>
+
+
+             <CheckBox Name="chbAutomatic" IsThreeState="True" Margin="5" IsChecked="{Binding FilerAutomatic}">
+                        Automatic Entries                    
+                </CheckBox>
+                
+                
+                
+            </WrapPanel>
+        </Expander>
+
+            <Expander Header="Add Entry" MaxHeight="150" VerticalAlignment="Top" HorizontalAlignment="Stretch"/>
             
 
+        </StackPanel>
+
+        <!-- Data Grid -->
+
+
+        <DataGrid Grid.Row="1"
+                  Margin="5,5,5,5" 
+                  x:Name="LogGrid"              
+                  VerticalAlignment="Top" 
+                  VerticalContentAlignment="Top"
+                  GridLinesVisibility="Horizontal" 
+                  
+                  AutoGenerateColumns="False"
+                  ItemsSource="{Binding FilteredLogEntries}"  >
 
             <DataGrid.Columns>
-                <mah:DataGridNumericUpDownColumn Header="Id" Binding="{Binding Id}" IsReadOnly="True"/>
-
-                <DataGridCheckBoxColumn Header="Automatic" Binding="{Binding Automatic}" IsReadOnly="True"/>
-
-                <DataGridTemplateColumn Header="Time">
+                <DataGridTemplateColumn Header="Time" Width="Auto">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
                             <TextBlock Text="{Binding Time}"/>
@@ -64,18 +126,18 @@
                         </DataTemplate>
                     </DataGridTemplateColumn.CellEditingTemplate>
                 </DataGridTemplateColumn>
-                
-                <DataGridTextColumn Header="Time" Binding="{Binding Time}" />
-                
-                <DataGridTextColumn Header="Column" Binding="{Binding Column}" />
+
+                <DataGridCheckBoxColumn Header="Auto" Binding="{Binding Automatic}" IsReadOnly="True"/>
+
+
                 <DataGridTextColumn Header="Row" Binding="{Binding Row}" />
+                <DataGridTextColumn Header="Column" Binding="{Binding Column}" />
+                <DataGridTextColumn Header="CardId" Binding="{Binding CardId}" Width="Auto"/>
+               
                 <DataGridTextColumn Header="Topic" Binding="{Binding Topic}" />
                 <DataGridTextColumn Header="Note" Binding="{Binding Note}" Width="*" />
             </DataGrid.Columns>
-            
-            
         </DataGrid>
-
 
 
     </Grid>

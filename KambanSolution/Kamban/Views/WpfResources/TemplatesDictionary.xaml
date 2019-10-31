@@ -60,4 +60,6 @@
     <DataTemplate DataType="{x:Type viewModels:HeaderPropertyViewModel }">
         <views:HeaderPropertyView/>
     </DataTemplate>
+
+
 </ResourceDictionary>
