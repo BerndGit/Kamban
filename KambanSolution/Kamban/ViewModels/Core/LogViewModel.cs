@@ -4,6 +4,7 @@ using Kamban.ViewRequests;
 using ReactiveUI;
 using ReactiveUI.Fody.Helpers;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
@@ -27,7 +28,7 @@ namespace Kamban.ViewModels.Core
     {
         public const string LogViewId = "KambanLogView";
 
-        public ObservableCollection<ILogEntry> LogEntries { get; set; } = new ObservableCollection<ILogEntry>();
+        public ReadOnlyObservableCollection<LogEntryViewModel> LogEntries { get; set; } // = new ReadOnlyObservableCollection<ILogEntry>();
         public ReadOnlyObservableCollection<LogEntryViewModel> FilteredLogEntries { get; set; }
 
         public BoxViewModel Box;
@@ -41,19 +42,151 @@ namespace Kamban.ViewModels.Core
         SourceList<CardViewModel> noCard { get; set; } = new SourceList<CardViewModel>();
 
 
-        [Reactive] public ColumnViewModel SelectedColumn { get; set; }
-        [Reactive] public RowViewModel SelectedRow { get; set; }
-        [Reactive] public CardViewModel SelectedCard { get; set; }
+        [Reactive] public ColumnViewModel FltSelectedColumn { get; set; }
+        [Reactive] public RowViewModel FltSelectedRow { get; set; }
+        [Reactive] public CardViewModel FltSelectedCard { get; set; }
+        [Reactive] public Nullable<bool> FltAutomatic { get; set; }
 
-        [Reactive] public Nullable<bool> FilerAutomatic { get; set; }
+        [Reactive] public ColumnViewModel EdtSelectedColumn { get; set; }
+        [Reactive] public RowViewModel EdtSelectedRow { get; set; }
+        [Reactive] public CardViewModel EdtSelectedCard { get; set; }
+        [Reactive] public String EdtTopic { get; set; }
+        [Reactive] public String EdtNote { get; set; }
+        [Reactive] public DateTime EdtTime { get; set; }
+
+        [Reactive] public DateTime CurrTime { get; set; }
+
+        private IObservable<DateTime> _CurrTime { get; set; } = Observable.Interval(TimeSpan.FromMilliseconds(100), RxApp.MainThreadScheduler)
+           .Select(__ => DateTime.Now);
+
+        [Reactive] public Boolean AddCurrentTIme { get; set; } = true;
+
+        private LogEntryViewModel _SelectedLogEntry;
+        public LogEntryViewModel SelectedLogEntry
+        {
+            get => _SelectedLogEntry;
+            set
+            {
+                if (value != _SelectedLogEntry) { System.Windows.MessageBox.Show("SelectedLogEntry.set"); }
+                
+                this.RaiseAndSetIfChanged(ref _SelectedLogEntry, value);
+                this.RaisePropertyChanged(nameof(SelectedLogEntryColumn));
+                this.RaisePropertyChanged(nameof(SelectedLogEntryRow));
+                this.RaisePropertyChanged(nameof(SelectedLogEntryCard));
+            }
+        }
+
+        private ColumnViewModel _SelectedLogEntryColumn;
+        public ColumnViewModel SelectedLogEntryColumn
+        {
+            get
+            {
+                try
+                {
+                    return Box.Columns.Items.Where(col => (col.Id == _SelectedLogEntry.ColumnId)).First();
+                }
+                catch
+                {
+                    return null;
+                }
+
+            }
+            set
+            {
+                if (_SelectedLogEntry != null)
+                {
+                    if (value == null)
+                    {
+                        _SelectedLogEntry.ColumnId = -1;
+                        _SelectedLogEntry.Column = "";
+                    }
+                    else
+                    {
+                        _SelectedLogEntry.Column = value.Name;
+                        _SelectedLogEntry.ColumnId = value.Id;
+                        
+                    }
+                }
+                this.RaiseAndSetIfChanged(ref _SelectedLogEntryColumn, value);
+                this.RaisePropertyChanged(nameof(SelectedLogEntry));
+                
+            }
+        }
+
+        private RowViewModel _SelectedLogEntryRow;
+        public RowViewModel SelectedLogEntryRow
+        {
+            get
+            {
+                try
+                {
+                    return Box.Rows.Items.Where(col => (col.Id == _SelectedLogEntry.RowId)).First();
+                }
+                catch
+                {
+                    return null;
+                }
+            }
+            set
+            {
+                if (_SelectedLogEntry != null)
+                {
+                    if (value == null)
+                    {
+                        _SelectedLogEntry.RowId = -1;
+                        _SelectedLogEntry.Row = "";
+                    }
+                    else
+                    {
+                        _SelectedLogEntry.Row = value.Name;
+                        _SelectedLogEntry.RowId = value.Id;
+                        
+                    }
+                }
+                this.RaiseAndSetIfChanged(ref _SelectedLogEntryRow, value);
+                this.RaisePropertyChanged(nameof(SelectedLogEntry));
+
+            }
+        }
+
+        private CardViewModel _SelectedLogEntryCard;
+        public CardViewModel SelectedLogEntryCard
+        {
+            get
+            {
+                try
+                {
+                    return Box.Cards.Items.Where(col => (col.Id == _SelectedLogEntry.CardId)).First();
+                }
+                catch
+                {
+                    return null;
+                }
+            }
+            set
+            {
+                if (SelectedLogEntry != null)
+                {
+                    if (value == null)
+                    {
+                        _SelectedLogEntry.ColumnId = -1;
+                    }
+                    else
+                    {
+                        _SelectedLogEntry.CardId = value.Id;
+                        
+                    }
+                }
+                this.RaiseAndSetIfChanged(ref _SelectedLogEntryCard, value);
+                this.RaisePropertyChanged(nameof(SelectedLogEntry));
 
 
 
+            }
+        }
 
 
-        
-
-        public ReactiveCommand<Unit, Unit> UpdateFilteredList { get; private set; }
+        ///      public ReactiveCommand<Unit, Unit> UpdateFilteredList { get; private set; }
 
         private void UpdateFilteredListExecute()
         {
@@ -88,34 +221,37 @@ namespace Kamban.ViewModels.Core
             return logEntry => logEntry.CardId == card.Id;
         }
 
+        private class EntryTimeComparer : IComparer<ILogEntry>
+        {
+            public int Direction  {get; set; }= 1;
+
+            int IComparer<ILogEntry>.Compare(ILogEntry x, ILogEntry y)
+            {
+                return x.Time.CompareTo(y.Time)* Direction;
+            }
+        }
 
         public void Initialize(ViewRequest viewRequest)
         {
             Box = ((LogViewRequest)viewRequest).Box;
-
-            this.LogEntries.Clear();
-            Box.LogEntries.Items.ToList().ForEach(ent => this.LogEntries.Add(ent));
-
-            // Fixme
-            Box.LogEntries.Connect().Subscribe(cl =>   
-            {
-                this.LogEntries.Clear();
-                Box.LogEntries.Items.ToList().ForEach(ent => this.LogEntries.Add(ent));
-            });
-
             Title = "Log: " + Box.Title;
 
-            noColumn.Add(new ColumnViewModel() { Name = "-- none --" , Order=-1, Id = -1});
+            Box.LogEntries.Connect()
+                .Bind(out ReadOnlyObservableCollection<LogEntryViewModel> temp0);
+
+            this.LogEntries = temp0;
+
+            /// Filter Results
+
+            noColumn.Add(new ColumnViewModel() { Name = "-- none --", Order = -1, Id = -1 });
             noRow.Add(new RowViewModel() { Name = "-- none --", Order = -1, Id = -1 });
             noCard.Add(new CardViewModel() { Header = "-- none --", Order = -1, Id = -1 });
 
-            UpdateFilteredList = ReactiveCommand.Create(delegate { UpdateFilteredListExecute(); });
-
+            //     UpdateFilteredList = ReactiveCommand.Create(delegate { UpdateFilteredListExecute(); });
 
             Box.Columns
              .Connect()
              .Or(noColumn.Connect())
-             .AutoRefresh()
              .Sort(SortExpressionComparer<ColumnViewModel>.Ascending(x => x.Order))
              .Bind(out ReadOnlyObservableCollection<ColumnViewModel> temp1)
              .Subscribe();
@@ -124,7 +260,6 @@ namespace Kamban.ViewModels.Core
 
             Box.Rows
              .Connect()
-             .AutoRefresh()
              .Or(noRow.Connect())
              .Sort(SortExpressionComparer<RowViewModel>.Ascending(x => x.Order))
              .Bind(out ReadOnlyObservableCollection<RowViewModel> temp2)
@@ -134,7 +269,6 @@ namespace Kamban.ViewModels.Core
 
             Box.Cards
              .Connect()
-             .AutoRefresh()
              .Or(noCard.Connect())
              .Sort(SortExpressionComparer<CardViewModel>.Ascending(x => x.Order))
              .Bind(out ReadOnlyObservableCollection<CardViewModel> temp3)
@@ -143,59 +277,56 @@ namespace Kamban.ViewModels.Core
             AvailableCards = temp3;
 
 
-            var observableRowFilter = this.WhenAnyValue(viewModel => viewModel.SelectedRow)
+            var observableRowFilter = this.WhenAnyValue(viewModel => viewModel.FltSelectedRow)
                  .Select(MakeRowFilter);
 
-            var observableColFilter = this.WhenAnyValue(viewModel => viewModel.SelectedColumn)
+            var observableColFilter = this.WhenAnyValue(viewModel => viewModel.FltSelectedColumn)
                  .Select(MakeColumnFilter);
 
-            var observableAutomaticFilter = this.WhenAnyValue(viewModel => viewModel.FilerAutomatic)
+            var observableAutomaticFilter = this.WhenAnyValue(viewModel => viewModel.FltAutomatic)
                  .Select(MakeAutomaticFilter);
 
-            var observableCardFilter = this.WhenAnyValue(viewModel => viewModel.SelectedCard)
+            var observableCardFilter = this.WhenAnyValue(viewModel => viewModel.FltSelectedCard)
                 .Select(MakeCardFilter);
 
             Box.LogEntries.Connect()
+                .AutoRefresh()
                 .Filter(observableRowFilter)
                 .Filter(observableColFilter)
                 .Filter(observableAutomaticFilter)
                 .Filter(observableCardFilter)
+                .Sort(new EntryTimeComparer(){ Direction = -1})
                 .Bind(out ReadOnlyObservableCollection<LogEntryViewModel> temp4)
                 .Subscribe();
-
             FilteredLogEntries = temp4;
 
+            //// Add/Edit entries ==================================================================
 
+            _CurrTime.Where(_ => AddCurrentTIme).Subscribe(t => { EdtTime = t; });
+        }
 
+        public void MakeNewEntry()
+        {
+            LogEntryViewModel entr = new LogEntryViewModel()
+            {
+                Time = DateTime.Now,
+                Automatic = false,
+                Row = FltSelectedRow?.Name,
+                RowId = FltSelectedRow?.Id ?? -1,
+                Column = FltSelectedColumn?.Name,
+                ColumnId = FltSelectedColumn?.Id ?? -1,
+                CardId = FltSelectedCard?.Id ?? -1
+            };
+
+            Box.LogEntries.Add(entr);
+            SelectedLogEntry = entr;
         }
 
 
-
-  /*      private void BoxLogChanged(object sender, NotifyCollectionChangedEventArgs e)
-        {
-
-            this.LogEntries.Clear();
-            Box.LogEntries.Items.ToList().ForEach(ent => this.LogEntries.Add(ent));
-            if (e.NewItems!=null)
-            {
-                foreach (ILogEntry ent in e.NewItems)
-                {
-                    this.LogEntries.Add(ent);
-                };
-            }
-
-            if (e.OldItems != null)
-            {
-                foreach (ILogEntry ent in e.OldItems)
-                {
-                    this.LogEntries.Remove(ent);
-                };
-            }
-        }*/
     }
 
- 
 
-  
-    
+
+
+
 }

@@ -32,7 +32,7 @@ namespace Kamban.ViewModels.Core
         private bool Automaticvalue { get; set; } = true;
 
 
-        [AutoSave] public int Id
+        [AutoSave,Reactive] public int Id
         { get
             {
                 return this.Idvalue;
@@ -47,7 +47,7 @@ namespace Kamban.ViewModels.Core
             }
         }
 
-        [AutoSave] public DateTime Time
+        [AutoSave,Reactive] public DateTime Time
         {
             get
             {
@@ -63,7 +63,7 @@ namespace Kamban.ViewModels.Core
             }
         }
 
-        [AutoSave] public string Topic
+        [AutoSave,Reactive] public string Topic
         {
             get
             {
@@ -78,7 +78,7 @@ namespace Kamban.ViewModels.Core
                 }
             }
         }
-        [AutoSave] public string Board
+        [AutoSave,Reactive] public string Board
         {
             get
             {
@@ -94,7 +94,7 @@ namespace Kamban.ViewModels.Core
             }
         }
 
-        [AutoSave] public string Column
+        [AutoSave,Reactive] public string Column
         {
             get
             {
@@ -110,7 +110,7 @@ namespace Kamban.ViewModels.Core
             }
         }
 
-        [AutoSave] public string Row
+        [AutoSave,Reactive] public string Row
         {
             get
             {
@@ -126,7 +126,7 @@ namespace Kamban.ViewModels.Core
             }
         }
 
-        [AutoSave] public string Property
+        [AutoSave,Reactive] public string Property
         {
             get
             {
@@ -142,7 +142,7 @@ namespace Kamban.ViewModels.Core
             }
         }
 
-        [AutoSave] public string OldValue
+        [AutoSave,Reactive] public string OldValue
         {
             get
             {
@@ -157,7 +157,7 @@ namespace Kamban.ViewModels.Core
                 }
             }
         }
-        [AutoSave] public string NewValue
+        [AutoSave,Reactive] public string NewValue
         {
             get
             {
@@ -172,7 +172,7 @@ namespace Kamban.ViewModels.Core
                 }
             }
         }
-        [AutoSave] public string Note
+        [AutoSave,Reactive] public string Note
         {
             get
             {
@@ -188,7 +188,7 @@ namespace Kamban.ViewModels.Core
             }
         }
 
-        [AutoSave] public int CardId
+        [AutoSave,Reactive] public int CardId
         {
             get
             {
@@ -203,7 +203,7 @@ namespace Kamban.ViewModels.Core
                 }
             }
         }
-        [AutoSave] public int RowId
+        [AutoSave,Reactive] public int RowId
         {
             get
             {
@@ -218,7 +218,7 @@ namespace Kamban.ViewModels.Core
                 }
             }
         }
-        [AutoSave] public int ColumnId
+        [AutoSave,Reactive] public int ColumnId
         {
             get
             {
@@ -233,7 +233,7 @@ namespace Kamban.ViewModels.Core
                 }
             }
         }
-        [AutoSave] public int BoardId
+        [AutoSave,Reactive] public int BoardId
         {
             get
             {
@@ -249,7 +249,7 @@ namespace Kamban.ViewModels.Core
             }
         }
 
-        [AutoSave] public bool Automatic
+        [AutoSave,Reactive] public bool Automatic
         {
             get
             {

@@ -57,5 +57,12 @@ namespace Kamban.Views
              ViewModel.FullTitle = "ABCD: "; //options.Title;
 
         }
+
+        private void BuNewEntry_Click(object sender, RoutedEventArgs e)
+        {
+            ((LogViewModel)ViewModel).MakeNewEntry();
+        }
+
+  
     }
 }
