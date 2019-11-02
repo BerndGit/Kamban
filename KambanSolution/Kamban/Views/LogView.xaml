@@ -212,7 +212,7 @@
                              HorizontalAlignment="Stretch" MinWidth="200"
                              Margin="5"
                              IsEnabled="{Binding EntryEditable}"
-                          Text="{Binding SelectedLogEntry.Topic, UpdateSourceTrigger=PropertyChanged}">
+                          Text="{Binding SelectedLogEntry.Topic, UpdateSourceTrigger=PropertyChanged, Delay=500}">
                     </TextBox>
 
                     <Label Content="Note" Grid.Row="4" Grid.Column="0" Margin="5"/>
@@ -223,7 +223,7 @@
                              VerticalScrollBarVisibility="Auto"
                              MaxLines="999"
                              AcceptsReturn="true"
-                             Text="{Binding SelectedLogEntry.Note, UpdateSourceTrigger=PropertyChanged}">
+                             Text="{Binding SelectedLogEntry.Note, UpdateSourceTrigger=PropertyChanged, Delay=500}">
                     </TextBox>
 
                 </Grid>
