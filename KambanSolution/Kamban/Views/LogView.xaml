@@ -3,6 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:converters="clr-namespace:Kamban.Views.WpfResources"
              xmlns:local="clr-namespace:Kamban.Views"
              mc:Ignorable="d" 
              HorizontalAlignment="Stretch"
@@ -19,12 +20,14 @@
 
 
 
-    <!-- UserControl.Resources>
-        <ResourceDictionary Source="WpfResources/TemplatesDictionary.xaml"/>
-  </ -->
+    <UserControl.Resources>
+        <!-- ResourceDictionary Source="WpfResources/TemplatesDictionary.xaml"/ -->
+        <converters:DateTime_to_DateString x:Key="DateTime_to_DateString"/>
+        <converters:DateTime_to_TimeString x:Key="DateTime_to_TimeString"/>
+    </UserControl.Resources>
 
 
-    <Grid>
+            <Grid>
 
 
         <Grid.RowDefinitions>
@@ -251,20 +254,12 @@
                       >
 
                 <DataGrid.Columns>
-                    <DataGridTemplateColumn Header="Time" Width="Auto" IsReadOnly="True" SortMemberPath="Time">
-                        <DataGridTemplateColumn.CellTemplate>
-                            <DataTemplate>
-                                <TextBlock Text="{Binding Time}"/>
-                            </DataTemplate>
-                        </DataGridTemplateColumn.CellTemplate>
-                        <DataGridTemplateColumn.CellEditingTemplate>
-                            <DataTemplate>
-                                <mah:DateTimePicker SelectedDate="{Binding Time}" IsReadOnly="{Binding Automatic}" />
-                            </DataTemplate>
-                        </DataGridTemplateColumn.CellEditingTemplate>
-                    </DataGridTemplateColumn>
+                <!-- DataGridTextColumn Header="DateTime" Binding="{Binding Time}" IsReadOnly="True"/ -->
+                <DataGridTextColumn Header="Date" Binding="{Binding Time, Converter={StaticResource DateTime_to_DateString}}" IsReadOnly="True" />
 
-                    <DataGridCheckBoxColumn Header="Auto" Binding="{Binding Automatic}" IsReadOnly="True"/>
+                <DataGridTextColumn Header="Time" Binding="{Binding Time, Converter={StaticResource DateTime_to_TimeString}}" IsReadOnly="True"/>
+                    
+                <DataGridCheckBoxColumn Header="Auto" Binding="{Binding Automatic}" IsReadOnly="True"/>
                 <DataGridTextColumn Header="Row" Binding="{Binding Row}"   IsReadOnly="True"  />
                 <DataGridTextColumn Header="Column" Binding="{Binding Column}" IsReadOnly="True"/>
                 <DataGridTextColumn Header="CardId" Binding="{Binding CardId}" Width="Auto" IsReadOnly="True"/>

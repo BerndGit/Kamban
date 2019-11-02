@@ -61,7 +61,11 @@ namespace Kamban.ViewModels.Core
                         NotifyPropertyChanged();
                     }
                 }
-            } 
+            }
+
+
+
+
 
         [AutoSave,Reactive] public string Topic
        {

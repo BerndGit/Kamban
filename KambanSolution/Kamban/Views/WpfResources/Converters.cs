@@ -58,4 +58,47 @@ namespace Kamban.Views.WpfResources
                 .ConvertFrom(null, CultureInfo.CurrentCulture, value);
         }
     }
+
+    public class DateTime_to_DateString : IValueConverter
+    {
+        object IValueConverter.Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            try
+            {
+                return ((DateTime)value).ToString("d");
+            }
+            catch
+            {
+                return "";
+            }
+            
+        }
+
+        object IValueConverter.ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            throw new NotImplementedException();
+        }
+    }
+
+    public class DateTime_to_TimeString : IValueConverter
+    {
+        object IValueConverter.Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            try
+            {
+                return ((DateTime)value).ToString("HH:mm:ss.f");
+            }
+            catch
+            {
+                return "";
+            }
+        }
+
+        object IValueConverter.ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            throw new NotImplementedException();
+        }
+    }
+
+
 }
