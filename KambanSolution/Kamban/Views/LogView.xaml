@@ -246,7 +246,7 @@
                       SelectionMode="Single"
                   AutoGenerateColumns="False"
                   ItemsSource="{Binding FilteredLogEntries}" 
-                  SelectedItem="{Binding SelectedLogEntry, Mode=TwoWay}"
+                  SelectedItem="{Binding SelectedLogEntry, Mode=TwoWay, Delay=250}"
 
                       >
 

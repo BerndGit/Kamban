@@ -17,7 +17,8 @@
         <ResourceDictionary Source="WpfResources/TemplatesDictionary.xaml"/>
     </UserControl.Resources>
 
-    <ScrollViewer HorizontalScrollBarVisibility="Disabled" VerticalAlignment="Stretch">
+    <ScrollViewer HorizontalScrollBarVisibility="Disabled" VerticalAlignment="Stretch"
+                  PreviewMouseWheel="ScrollViewer_PreviewMouseWheel">
         <ScrollViewer.Style>
             <Style>
                 <Style.Triggers>
@@ -54,7 +55,8 @@
             CardOfContextMenu="{Binding CardOfContextMenu, Mode=TwoWay}"
             HeadOfContextMenu="{Binding HeadOfContextMenu, Mode=TwoWay}"
             CellDoubleClickCommand="{Binding CellDoubleClickCommand}"
-            mykanban:ContextMenuServiceExtensions.DataContext="{Binding}">
+            mykanban:ContextMenuServiceExtensions.DataContext="{Binding}"
+                         >
 
             <mykanban:Matrix.CardContextMenu>
                 <ContextMenu>

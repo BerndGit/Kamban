@@ -1,5 +1,8 @@
 ﻿using System;
 using System.Linq;
+using System.Windows;
+using System.Windows.Controls;
+using Kamban.MatrixControl;
 using Kamban.ViewModels;
 using Ui.Wpf.Common;
 using Ui.Wpf.Common.ShowOptions;
@@ -49,6 +52,13 @@ namespace Kamban.Views
                 maxHeight += Matrix.MainGrid.RowDefinitions[0].ActualHeight;
                 return maxHeight;
             }
+        }
+
+        private void ScrollViewer_PreviewMouseWheel(object sender, System.Windows.Input.MouseWheelEventArgs e)
+        {
+            ScrollViewer scv = (ScrollViewer)sender;
+            scv.ScrollToVerticalOffset(scv.VerticalOffset - e.Delta);
+            e.Handled = true;
         }
     }
 }
