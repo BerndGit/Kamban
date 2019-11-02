@@ -21,13 +21,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <AssemblyAttribute Include="System.Reflection.AssemblyMetadataAttribute">
-      <_Parameter1>SquirrelAwareVersion</_Parameter1>
-      <_Parameter2>1</_Parameter2>
-    </AssemblyAttribute>
-  </ItemGroup>
-
-  <ItemGroup>
     <Reference Include="ReachFramework" />
     <Reference Include="System.Printing" />
     <Reference Include="PresentationCore" />
@@ -42,7 +35,7 @@
 
     <None Update="Properties\Settings.settings" Generator="SettingsSingleFileGenerator" LastGenOutput="Settings.Designer.cs" />
 
-    <None Update="Views\LogView.xaml">
+    <None Update="Views\HeaderPropertyView.xaml">
       <Generator>MSBuild:Compile</Generator>
     </None>
     <Compile Update="Properties\Settings.Designer.cs" DesignTime="True" AutoGen="True" DependentUpon="Settings.settings" />
@@ -53,7 +46,6 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Page Include="**\*.xaml" SubType="Designer" Generator="MSBuild:UpdateDesignTimeXaml" Exclude="App.xaml" />
-    <None Remove="Views\LogView.xaml" />
     <Compile Update="**\*.xaml.cs" SubType="Code" DependentUpon="%(Filename)" />
 
     <Content Include="FodyWeavers.xml" />
@@ -62,8 +54,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="AutoMapper" Version="9.0.0" />
-    <PackageReference Include="DynamicData" Version="6.13.20" />
+    <PackageReference Include="AutoMapper" Version="8.1.1" />
+    <PackageReference Include="DynamicData" Version="6.12.13" />
     <PackageReference Include="gong-wpf-dragdrop" Version="2.0.4" />
     <PackageReference Include="MahApps.Metro.IconPacks" Version="2.3.0" />
     <PackageReference Include="Monik.Common" Version="1.0.4" />
@@ -77,10 +69,5 @@
     <ProjectReference Include="..\Kamban.Repository.LiteDb\Kamban.Repository.LiteDb.csproj" />
     <ProjectReference Include="..\Kamban.Repository.Redmine\Kamban.Repository.Redmine.csproj" />
     <ProjectReference Include="..\Kamban.Templates\Kamban.Templates.csproj" />
-  </ItemGroup>
-  <ItemGroup>
-    <Page Update="Views\LogView.xaml">
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
   </ItemGroup>
 </Project>

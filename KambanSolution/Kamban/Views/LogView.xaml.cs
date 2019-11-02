@@ -27,24 +27,17 @@ namespace Kamban.Views
     public partial class LogView : UserControl, IView, IStretchedSizeView
     {
     
-        public LogViewModel Log { get; set; }
+   
 
         public LogView(LogViewModel viewModel)
         {
+
             InitializeComponent();
+
             ViewModel = viewModel;
-            DataContext = ViewModel;
-
-            Log = (LogViewModel) ViewModel;
-            
-
-            LogGrid.ItemsSource = Log.LogEntries;
-
+            DataContext =  ViewModel;
 
         }
-
-
-
 
         public IViewModel ViewModel { get; set; }
 
@@ -64,5 +57,12 @@ namespace Kamban.Views
              ViewModel.FullTitle = "ABCD: "; //options.Title;
 
         }
+
+        private void BuNewEntry_Click(object sender, RoutedEventArgs e)
+        {
+            ((LogViewModel)ViewModel).MakeNewEntry();
+        }
+
+  
     }
 }

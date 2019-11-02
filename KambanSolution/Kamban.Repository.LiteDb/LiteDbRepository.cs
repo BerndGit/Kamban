@@ -147,9 +147,21 @@ namespace Kamban.Repository.LiteDb
             db?.Dispose();
         }
 
-        public Task<LogEntry> AddLogEntry(LogEntry entr)
+        public Task<LogEntry> CreateOrUpdateLogEntry(LogEntry entr)
         {
             return db.UpsertAsync(entr);            
+        }
+
+        
+
+        public Task RemoveLogEntry(int EntryId)
+        {
+            return Task.Run(() =>
+            {
+                var logs = db.GetCollectionByType<LogEntry>();
+                logs.Delete(x => x.Id == EntryId);
+            });
+            
         }
     } //end of class
 }

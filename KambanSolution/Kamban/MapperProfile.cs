@@ -12,8 +12,9 @@ namespace Kamban
             CreateMap<Board, BoardViewModel>();
 
             CreateMap<LogEntry, LogEntryViewModel>();
-            
-            CreateMap<CardViewModel, Card>()
+            CreateMap<LogEntryViewModel, LogEntry>();
+
+             CreateMap<CardViewModel, Card>()
                 .ForMember(dst => dst.Head, opt => opt.MapFrom(src => src.Header))
                 .ForMember(dst => dst.ColumnId, opt => opt.MapFrom(src => src.ColumnDeterminant))
                 .ForMember(dst => dst.RowId, opt => opt.MapFrom(src => src.RowDeterminant));

@@ -16,14 +16,14 @@ using ReactiveUI.Fody.Helpers;
 
 namespace Kamban.ViewModels.Core
 {
-    public class BoxViewModel : ReactiveObject
+    public partial class BoxViewModel : ReactiveObject
     {
         [Reactive] public string Uri { get; set; }
         [Reactive] public bool Loaded { get; set; }
 
         [Reactive] public string Title { get; set; }
         [Reactive] public int TotalTickets { get; set; }
-        [Reactive] public int TotalLogEntries { get; set; }
+
         [Reactive] public string BoardList { get; set; }
 
         [Reactive] public SourceList<ColumnViewModel> Columns { get; set; }
@@ -32,9 +32,9 @@ namespace Kamban.ViewModels.Core
 
         [Reactive] public SourceList<CardViewModel> Cards { get; set; }
 
-        [Reactive] public SourceList<LogEntryViewModel> LogEntries { get; set; } = new SourceList<LogEntryViewModel>();
 
-        ISaveRepository Repo;
+
+
 
         private readonly IMonik mon;
         private readonly IMapper mapper;
@@ -69,7 +69,7 @@ namespace Kamban.ViewModels.Core
         public void Connect(ISaveRepository repo)
         {
             Repo = repo;
-            
+
             ///////////////////
             // Boards AutoSaver
             ///////////////////
@@ -262,167 +262,5 @@ namespace Kamban.ViewModels.Core
                     .ToList()
                     .ForEach(a));
         }
-
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="viewRequest"></param>
-        /// 
-        public void InitializeLogger(ISaveRepository repo)
-        {
-                      
-            var CardChanges = Cards.Connect();
-            CardChanges.WhereReasonsAre(ListChangeReason.Add)
-                .Subscribe(c =>
-                {
-                    foreach (Change<CardViewModel> ccvm in c)
-                    {
-                        LogCardChanges(ccvm.Item.Current,repo);
-                        LogEntries.Add(
-                            new LogEntryViewModel()
-                            {
-                                Id = LogEntries.Count + 1,
-                                Time = ccvm.Item.Current.Created,
-                                ColumnId = ccvm.Item.Current.ColumnDeterminant,
-                                RowId = ccvm.Item.Current.RowDeterminant,
-                                Source = ccvm.Reason.ToString(),
-                                Note = ccvm.Item.Current.Header
-                            });
-                    }
-                });
-
-            CardChanges.WhereReasonsAre(ListChangeReason.AddRange)
-                .Subscribe(c =>
-                {
-                    foreach (Change<CardViewModel> ccvm in c)
-                    {
-                        foreach (CardViewModel cvm in ccvm.Range.ToList())
-                        {
-                            LogCardChanges(cvm,repo); // Add Observer
-
-                            // Don't generate Log Entry, since AddRange is issued only at loading of Box.
-                        }
-                    }
-                }); 
-
-
-            CardChanges.WhereReasonsAre(ListChangeReason.Remove)
-            .Subscribe(c =>
-            {
-                foreach (Change<CardViewModel> ccvm in c)
-                {
-                    LogEntries.Add(
-                        new LogEntryViewModel()
-                        {
-                            Id = LogEntries.Count + 1,
-                            Time = ccvm.Item.Current.Created,
-                            ColumnId = ccvm.Item.Current.ColumnDeterminant,
-                            RowId = ccvm.Item.Current.RowDeterminant,
-                            Source = ccvm.Reason.ToString(),
-                            Note = ccvm.Item.Current.Header
-                        });
-                }
-            });
-
-            CardChanges.WhereReasonsAre(ListChangeReason.RemoveRange)
-             .Subscribe(c =>
-             {
-                 foreach (Change<CardViewModel> ccvm in c)
-                 {
-                     foreach (CardViewModel cvm in ccvm.Range.ToList())
-                         LogEntries.Add(
-                                         new LogEntryViewModel()
-                                         {
-                                             Id = LogEntries.Count + 1,
-                                             Time = cvm.Created,
-                                             ColumnId = cvm.ColumnDeterminant,
-                                             RowId = cvm.RowDeterminant,
-                                             Source = ccvm.Reason.ToString(),
-                                             Note = cvm.Header
-                                         }); 
-                 }
-             });
-        }
-
-
-        public void LogCardChanges(CardViewModel cvm, ISaveRepository repo)
-        {
-            List<String> notLogging = new List<string>() { "Modified", "Order" , "ShowDescription"};
-
-            cvm.Changing.Subscribe(c =>
-            {
-                if (notLogging.Contains(c.PropertyName)) return;
-
-                LogEntries.Add(
-                            new LogEntryViewModel()
-                            {
-                                Id = LogEntries.Count + 1,
-                                Time = DateTime.Now,
-                                Property = c.PropertyName,
-                                OldValue = cvm.GetType().GetProperty(c.PropertyName).GetValue(cvm, null)?.ToString(),
-
-                                ColumnId = cvm.ColumnDeterminant,
-                                RowId = cvm.RowDeterminant,
-                                BoardId = cvm.BoardId,
-                                CardId = cvm.Id,
-
-                                Source = "Card Changed",
-
-                            }); ; ;
-
-
-            });
-
-
-            cvm.Changed.Subscribe(c =>
-            {
-                if (notLogging.Contains(c.PropertyName)) return;
-
-            var Entry = LogEntries.Items.Where(x => { return (x.Property == c.PropertyName) & (x.CardId == cvm.Id); }).Last();
-
-                if (Entry == null) // Should not happen
-                {
-                    Entry = new LogEntryViewModel()
-                    {
-                        Id = LogEntries.Count + 1,
-                        Time = DateTime.Now,
-                        Property = c.PropertyName,
-                        OldValue = "",
-
-                        ColumnId = cvm.ColumnDeterminant,
-                        RowId = cvm.RowDeterminant,
-                        BoardId = cvm.BoardId,
-                        CardId = cvm.Id,
-
-                        Source = "Card Changed",
-                    };
-                };
-
-                    Entry.NewValue = cvm.GetType().GetProperty(c.PropertyName).GetValue(cvm, null)?.ToString();
-                    Entry.Note = "Property [" + c.PropertyName + "]: " + Entry.OldValue + " -> " + Entry.NewValue;
-
-                    Entry.Column = Columns.Items.Where(x => { return (x.Id == Entry.ColumnId); }).First().Name;
-                    Entry.Row = Rows.Items.Where(x => { return (x.Id == Entry.RowId); }).First().Name;
-                    Entry.Board = Rows.Items.Where(x => { return (x.Id == Entry.BoardId); }).First().Name;
-
-                    repo.AddLogEntry(new Repository.Models.LogEntry()  // Fixme move to Observer
-                    {
-                        Automatic = Entry.Automatic,
-                        Id = Entry.Id,
-                        Board = Entry.Board,
-                        BoardId = Entry.BoardId,
-                        CardId = Entry.CardId,
-                        Cloumn = Entry.Column,
-                        CloumnId = Entry.ColumnId,
-                        NewValue = Entry.NewValue,
-                        Note = Entry.Note,
-                        OldValue = Entry.Property,
-                        Property = Entry.Property,
-                        Row = Entry.Row,
-                        RowId = Entry.RowId
-                    });
-            });
-        }
-    }
+    }   
 }
