@@ -32,8 +32,8 @@ namespace Kamban.ViewModels.Core
         private bool Automaticvalue { get; set; } = true;
 
 
-        [AutoSave,Reactive] public int Id
-        { get
+        [AutoSave,Reactive] public int Id 
+       { get
             {
                 return this.Idvalue;
             }
@@ -47,24 +47,24 @@ namespace Kamban.ViewModels.Core
             }
         }
 
-        [AutoSave,Reactive] public DateTime Time
-        {
-            get
-            {
-                return this.Timevalue;
-            }
-            set
-            {
-                if (value != this.Timevalue)
+        [AutoSave,Reactive] public DateTime Time 
+         {
+                get
                 {
-                    this.Timevalue = value;
-                    NotifyPropertyChanged();
+                    return this.Timevalue;
                 }
-            }
-        }
+                set
+                {
+                    if (value != this.Timevalue)
+                    {
+                        this.Timevalue = value;
+                        NotifyPropertyChanged();
+                    }
+                }
+            } 
 
         [AutoSave,Reactive] public string Topic
-        {
+       {
             get
             {
                 return this.Topicvalue;
@@ -94,8 +94,8 @@ namespace Kamban.ViewModels.Core
             }
         }
 
-        [AutoSave,Reactive] public string Column
-        {
+        [AutoSave,Reactive] public string Column 
+     {
             get
             {
                 return this.Columnvalue;
@@ -127,7 +127,7 @@ namespace Kamban.ViewModels.Core
         }
 
         [AutoSave,Reactive] public string Property
-        {
+       {
             get
             {
                 return this.Propertyvalue;
@@ -142,8 +142,8 @@ namespace Kamban.ViewModels.Core
             }
         }
 
-        [AutoSave,Reactive] public string OldValue
-        {
+        [AutoSave,Reactive] public string OldValue 
+    {
             get
             {
                 return this.OldValuevalue;
@@ -156,9 +156,10 @@ namespace Kamban.ViewModels.Core
                     NotifyPropertyChanged();
                 }
             }
-        }
+        } 
+
         [AutoSave,Reactive] public string NewValue
-        {
+      {
             get
             {
                 return this.NewValuevalue;
@@ -173,7 +174,7 @@ namespace Kamban.ViewModels.Core
             }
         }
         [AutoSave,Reactive] public string Note
-        {
+       {
             get
             {
                 return this.Notevalue;
@@ -189,7 +190,7 @@ namespace Kamban.ViewModels.Core
         }
 
         [AutoSave,Reactive] public int CardId
-        {
+      {
             get
             {
                 return this.CardIdvalue;
@@ -203,8 +204,9 @@ namespace Kamban.ViewModels.Core
                 }
             }
         }
+
         [AutoSave,Reactive] public int RowId
-        {
+       {
             get
             {
                 return this.RowIdvalue;
@@ -217,9 +219,9 @@ namespace Kamban.ViewModels.Core
                     NotifyPropertyChanged();
                 }
             }
-        }
-        [AutoSave,Reactive] public int ColumnId
-        {
+        } 
+        [AutoSave,Reactive] public int ColumnId 
+      {
             get
             {
                 return this.ColumnIdvalue;
@@ -233,8 +235,8 @@ namespace Kamban.ViewModels.Core
                 }
             }
         }
-        [AutoSave,Reactive] public int BoardId
-        {
+        [AutoSave,Reactive] public int BoardId 
+       {
             get
             {
                 return this.BoardIdvalue;
@@ -250,7 +252,7 @@ namespace Kamban.ViewModels.Core
         }
 
         [AutoSave,Reactive] public bool Automatic
-        {
+       {
             get
             {
                 return this.Automaticvalue;
@@ -263,7 +265,7 @@ namespace Kamban.ViewModels.Core
                     NotifyPropertyChanged();
                 }
             }
-        } 
+        }
 
         public event PropertyChangedEventHandler PropertyChanged;
 

@@ -12,9 +12,10 @@
              xmlns:mah="http://metro.mahapps.com/winfx/xaml/controls"
              xmlns:mykanban="clr-namespace:Kamban.MatrixControl"
              xmlns:viewModels="clr-namespace:Kamban.ViewModels.Core"
+             d:DesignHeight="450" d:DesignWidth="800" 
             d:DataContext="{d:DesignInstance viewModels:LogViewModel}"
             >
-    <!--         d:DesignHeight="450" d:DesignWidth="800"           -->
+    <!--                   -->
 
 
 
@@ -23,15 +24,15 @@
   </ -->
 
 
-            <Grid>
+    <Grid>
 
 
         <Grid.RowDefinitions>
             <RowDefinition x:Name="Controls" Height="Auto" />
-            <RowDefinition x:Name="DataGrid" Height="300"/>
+            <RowDefinition x:Name="DataGrid" Height="*"/>
         </Grid.RowDefinitions>
-        
-         <StackPanel Grid.Row="0" HorizontalAlignment="Stretch" Orientation="Vertical" VerticalAlignment="Stretch" >
+
+        <StackPanel Grid.Row="0" HorizontalAlignment="Stretch" Orientation="Vertical" VerticalAlignment="Stretch" >
             <Expander Header="Filter Data" MaxHeight="150" VerticalAlignment="Top" HorizontalAlignment="Stretch">
                 <StackPanel Orientation="Horizontal">
                     <Label Target="{Binding ElementName=cobRows}" VerticalAlignment="Center" Margin="5">Row</Label>
@@ -115,20 +116,42 @@
                         <RowDefinition Height="Auto"/>
                         <RowDefinition Height="Auto"/>
                         <RowDefinition Height="Auto"/>
-                        
+
                     </Grid.RowDefinitions>
 
-                    <Button x:Name="buNewEntry" Content="New Entry"
-                            Grid.Row="0" Grid.Column="6" Margin="5"
-                            Click="BuNewEntry_Click"
-                            >
-                        
-                    </Button>
-                    
-                    <Label Content="Row" Grid.Row="0" Grid.Column="0" Margin="5"/>
+                    <TextBlock Grid.Row="0" Grid.Column="1" Grid.ColumnSpan="7"
+     
+                               Foreground="Red">
+                        <TextBlock.Style>
+                            <Style TargetType="TextBlock">
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding SelectedLogEntry.Automatic}" Value="True">
+                                        <Setter Property="Visibility" Value="Visible"/>
+                                        <Setter Property="Height" Value="Auto"/>
+                                        <Setter Property="Margin" Value="5"/>
+                                    </DataTrigger>
+                                    <DataTrigger Binding="{Binding SelectedLogEntry.Automatic}" Value="False">
+                                        <Setter Property="Visibility" Value="Hidden"/>
+                                        <Setter Property="Height" Value="0"/>
+                                        <Setter Property="Margin" Value="0"/>
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </TextBlock.Style>
+                        <TextBlock.Text>
+                            Automatic generated Entries cannot be edited.
+                        </TextBlock.Text>
+                    </TextBlock>
 
-                    <ComboBox x:Name="cobRowsAdd" Grid.Row="0" Grid.Column="1"
-                        
+                    <Button x:Name="buNewEntry" Content="New Entry"
+                            Grid.Row="1" Grid.Column="6" Margin="5"
+                            Click="BuNewEntry_Click"   />
+
+
+                    <Label Content="Row" Grid.Row="1" Grid.Column="0" Margin="5"/>
+
+                    <ComboBox x:Name="cobRowsAdd" Grid.Row="1" Grid.Column="1"
+                        IsEnabled="{Binding EntryEditable}"
                         Margin="5,5,5,5" 
                         ItemsSource="{Binding AvailableRows}"
                         SelectedItem="{Binding SelectedLogEntryRow}"
@@ -141,15 +164,14 @@
                         </ComboBox.ItemTemplate>
                     </ComboBox>
 
-                    <Label Target="{Binding ElementName=cobCol}" Grid.Column="2" Grid.Row="0" Margin="5">Column</Label>
+                    <Label Target="{Binding ElementName=cobCol}" Grid.Column="2" Grid.Row="1" Margin="5">Column</Label>
 
-                    <ComboBox x:Name="cobColAdd" Grid.Column="3" Grid.Row="0"
-                
-                                Margin="5,5,5,5" 
-                                ItemsSource="{Binding AvailableColumns}"
-                                SelectedItem="{Binding SelectedLogEntryColumn}"
-                                Width="100"
-                                Height="30">
+                    <ComboBox x:Name="cobColAdd" Grid.Column="3" Grid.Row="1"
+                           IsEnabled="{Binding EntryEditable}"
+                           Margin="5,5,5,5" 
+                           ItemsSource="{Binding AvailableColumns}"
+                           SelectedItem="{Binding SelectedLogEntryColumn}"
+                           Width="100"  Height="30">
                         <ComboBox.ItemTemplate>
                             <DataTemplate>
                                 <TextBlock Text="{Binding Name}"/>
@@ -157,64 +179,56 @@
                         </ComboBox.ItemTemplate>
                     </ComboBox>
 
-                    <Label Target="{Binding ElementName=cobCard}" Grid.Column="4" Grid.Row="0" VerticalAlignment="Center" Margin="5">Card</Label>
-                            
-                    <ComboBox x:Name="cobCardAdd" Grid.Column="5" Grid.Row="0" 
-                
-                            Margin="5,5,5,5" 
-                            ItemsSource="{Binding AvailableCards}"
-                            SelectedItem="{Binding SelectedLogEntryCard}"
-                            Width="100"
-                            Height="30">
-                                    <ComboBox.ItemTemplate>
-                                        <DataTemplate>
-                                            <StackPanel Orientation="Horizontal">
-                                                <TextBlock Text="#"/>
-                                                <TextBlock Text="{Binding Id}"/>
-                                                <TextBlock Text=": "/>
-                                                <TextBlock Text="{Binding Header}"/>
-                                            </StackPanel>
-                                        </DataTemplate>
+                    <Label Target="{Binding ElementName=cobCard}" Grid.Column="4" Grid.Row="1" VerticalAlignment="Center" Margin="5">Card</Label>
 
-                                    </ComboBox.ItemTemplate>
-                                </ComboBox>
+                    <ComboBox x:Name="cobCardAdd" Grid.Column="5" Grid.Row="1" 
+                           IsEnabled="{Binding EntryEditable}"
+                           Margin="5,5,5,5" 
+                           ItemsSource="{Binding AvailableCards}"
+                           SelectedItem="{Binding SelectedLogEntryCard}"
+                           Width="100"
+                           Height="30">
+                        <ComboBox.ItemTemplate>
+                            <DataTemplate>
+                                <StackPanel Orientation="Horizontal">
+                                    <TextBlock Text="#"/>
+                                    <TextBlock Text="{Binding Id}"/>
+                                    <TextBlock Text=": "/>
+                                    <TextBlock Text="{Binding Header}"/>
+                                </StackPanel>
+                            </DataTemplate>
+                        </ComboBox.ItemTemplate>
+                    </ComboBox>
 
-                    <Label Content="Time" Grid.Row="1" Grid.Column="0" Margin="5"/>
-                    <mah:DateTimePicker Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="2"
-                       HorizontalAlignment="Left"
-                       Margin="5"
-                        SelectedDate="{Binding SelectedLogEntry.Time}"  />
+                    <Label Content="Time" Grid.Row="2" Grid.Column="0" Margin="5"/>
+                    <mah:DateTimePicker Grid.Row="2" Grid.Column="1" Grid.ColumnSpan="2"
+                         IsEnabled="{Binding EntryEditable}"
+                         HorizontalAlignment="Left"
+                         Margin="5"
+                         SelectedDate="{Binding SelectedLogEntry.Time}"  />
 
-                    <Label Content="Topic" Grid.Row="2" Grid.Column="0" Margin="5"/>
-                    <TextBox Grid.Row="2" Grid.Column="1" Grid.ColumnSpan="5" 
+                    <Label Content="Topic" Grid.Row="3" Grid.Column="0" Margin="5"/>
+                    <TextBox Grid.Row="3" Grid.Column="1" Grid.ColumnSpan="5" 
                              HorizontalAlignment="Stretch" MinWidth="200"
                              Margin="5"
-                          Text="{Binding SelectedLogEntry.Topic}">
+                             IsEnabled="{Binding EntryEditable}"
+                          Text="{Binding SelectedLogEntry.Topic, UpdateSourceTrigger=PropertyChanged}">
                     </TextBox>
 
-                    <Label Content="Note" Grid.Row="3" Grid.Column="0" Margin="5"/>
-                    <TextBox Grid.Row="3" Grid.Column="1" Grid.ColumnSpan="5" Margin="5"
+                    <Label Content="Note" Grid.Row="4" Grid.Column="0" Margin="5"/>
+                    <TextBox Grid.Row="4" Grid.Column="1" Grid.ColumnSpan="5" Margin="5"
+                             IsEnabled="{Binding EntryEditable}"
                              HorizontalAlignment="Stretch"
                              MinWidth="200" MinHeight="150"
                              VerticalScrollBarVisibility="Auto"
                              MaxLines="999"
                              AcceptsReturn="true"
-                             Text="{Binding SelectedLogEntry.Note}">
+                             Text="{Binding SelectedLogEntry.Note, UpdateSourceTrigger=PropertyChanged}">
                     </TextBox>
-
-
-
-
-
-
-
-
-
-
 
                 </Grid>
             </Expander>
-
+        </StackPanel>
 
 
             <!-- Data Grid -->
@@ -226,18 +240,16 @@
                   VerticalAlignment="Stretch" 
                   VerticalContentAlignment="Top"
                   GridLinesVisibility="Horizontal" 
-                      
-                   VerticalScrollBarVisibility="Visible"
+                  VerticalScrollBarVisibility="Visible"
                   IsSynchronizedWithCurrentItem="True"
-                     
-                     
                   AutoGenerateColumns="False"
                   ItemsSource="{Binding FilteredLogEntries}" 
-                  SelectedItem="{Binding SelectedLogEntry, Mode=TwoWay}"    
+                  SelectedItem="{Binding SelectedLogEntry, Mode=TwoWay}"
+                     
                       >
 
                 <DataGrid.Columns>
-                    <DataGridTemplateColumn Header="Time" Width="Auto" >
+                    <DataGridTemplateColumn Header="Time" Width="Auto" IsReadOnly="True">
                         <DataGridTemplateColumn.CellTemplate>
                             <DataTemplate>
                                 <TextBlock Text="{Binding Time}"/>
@@ -251,19 +263,36 @@
                     </DataGridTemplateColumn>
 
                     <DataGridCheckBoxColumn Header="Auto" Binding="{Binding Automatic}" IsReadOnly="True"/>
-
-
-                    <DataGridTextColumn Header="Row" Binding="{Binding Row}" />
-                    <DataGridTextColumn Header="Column" Binding="{Binding Column}" />
-                    <DataGridTextColumn Header="CardId" Binding="{Binding CardId}" Width="Auto"/>
-
-                    <DataGridTextColumn Header="Topic" Binding="{Binding Topic}" />
+                <DataGridTextColumn Header="Row" Binding="{Binding Row}"   IsReadOnly="True"  />
+                <DataGridTextColumn Header="Column" Binding="{Binding Column}" IsReadOnly="True"/>
+                <DataGridTextColumn Header="CardId" Binding="{Binding CardId}" Width="Auto" IsReadOnly="True"/>
+                <DataGridTextColumn Header="Topic" Binding="{Binding Topic}" IsReadOnly="True"/>
                     <DataGridTextColumn Header="Note" Binding="{Binding Note}" Width="*" />
                 </DataGrid.Columns>
+
+               <DataGrid.RowStyle>
+                    <Style TargetType="DataGridRow">
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding Automatic}" Value="True">
+                                <Setter Property="Foreground" Value="DarkSlateGray"/>
+                                <Setter Property="FontStyle" Value="Italic"/>
+                        </DataTrigger>
+                        <DataTrigger Binding="{Binding Automatic}" Value="False">
+                            <Setter Property="Foreground" Value="Black"/>
+                        </DataTrigger>
+                        <Trigger Property="IsSelected" Value="True">
+                            <Setter Property="Foreground"  Value="Red" />
+        
+                            <Setter Property="Background"  Value="Azure" />
+
+                        </Trigger>
+                    </Style.Triggers> 
+                    </Style>
+            </DataGrid.RowStyle>
             </DataGrid>
 
 
-        </StackPanel>
+   
 
     </Grid>
 </UserControl>

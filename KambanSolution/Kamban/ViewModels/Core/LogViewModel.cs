@@ -61,18 +61,25 @@ namespace Kamban.ViewModels.Core
 
         [Reactive] public Boolean AddCurrentTIme { get; set; } = true;
 
+        public bool EntryEditable {
+            get
+            {
+                if (SelectedLogEntry == null) return false;
+                return !SelectedLogEntry.Automatic;
+            }
+        }
+
         private LogEntryViewModel _SelectedLogEntry;
         public LogEntryViewModel SelectedLogEntry
         {
             get => _SelectedLogEntry;
             set
-            {
-                if (value != _SelectedLogEntry) { System.Windows.MessageBox.Show("SelectedLogEntry.set"); }
-                
+            {              
                 this.RaiseAndSetIfChanged(ref _SelectedLogEntry, value);
                 this.RaisePropertyChanged(nameof(SelectedLogEntryColumn));
                 this.RaisePropertyChanged(nameof(SelectedLogEntryRow));
                 this.RaisePropertyChanged(nameof(SelectedLogEntryCard));
+                this.RaisePropertyChanged(nameof(EntryEditable));
             }
         }
 
@@ -290,7 +297,6 @@ namespace Kamban.ViewModels.Core
                 .Select(MakeCardFilter);
 
             Box.LogEntries.Connect()
-                .AutoRefresh()
                 .Filter(observableRowFilter)
                 .Filter(observableColFilter)
                 .Filter(observableAutomaticFilter)
