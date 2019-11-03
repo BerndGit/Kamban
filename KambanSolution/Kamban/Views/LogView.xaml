@@ -27,7 +27,7 @@
     </UserControl.Resources>
 
 
-            <Grid>
+    <Grid>
 
 
         <Grid.RowDefinitions>
@@ -94,10 +94,18 @@
                     <CheckBox Name="chbAutomatic" IsThreeState="True" Margin="5" IsChecked="{Binding FltAutomatic}">
                         Automatic Entries
                     </CheckBox>
-
+                   
+                    
+                    
+                    <Button x:Name="buExport" Content="Export to CSV"
+                           Margin="5"
+                            Click="BuExport_Click"   />
 
 
                 </StackPanel>
+
+                
+                
             </Expander>
 
             <Expander Header="Edit/Add Entry" MaxHeight="400" VerticalAlignment="Top" HorizontalAlignment="Stretch">
@@ -234,11 +242,11 @@
         </StackPanel>
 
 
-            <!-- Data Grid -->
+        <!-- Data Grid -->
 
 
-            <DataGrid Grid.Row="1"
-                  Margin="5,5,5,5" 
+        <DataGrid Grid.Row="1"
+                  Margin="5" 
                   x:Name="LogGrid"              
                   VerticalAlignment="Stretch" 
                   VerticalContentAlignment="Top"
@@ -250,43 +258,50 @@
                   AutoGenerateColumns="False"
                   ItemsSource="{Binding FilteredLogEntries}" 
                   SelectedItem="{Binding SelectedLogEntry, Mode=TwoWay, Delay=250}"
-
                       >
 
-                <DataGrid.Columns>
+            <DataGrid.Columns>
                 <!-- DataGridTextColumn Header="DateTime" Binding="{Binding Time}" IsReadOnly="True"/ -->
                 <DataGridTextColumn Header="Date" Binding="{Binding Time, Converter={StaticResource DateTime_to_DateString}}" IsReadOnly="True" />
 
                 <DataGridTextColumn Header="Time" Binding="{Binding Time, Converter={StaticResource DateTime_to_TimeString}}" IsReadOnly="True"/>
-                    
+
                 <DataGridCheckBoxColumn Header="Auto" Binding="{Binding Automatic}" IsReadOnly="True"/>
                 <DataGridTextColumn Header="Row" Binding="{Binding Row}"   IsReadOnly="True"  />
                 <DataGridTextColumn Header="Column" Binding="{Binding Column}" IsReadOnly="True"/>
                 <DataGridTextColumn Header="CardId" Binding="{Binding CardId}" Width="Auto" IsReadOnly="True"/>
                 <DataGridTextColumn Header="Topic" Binding="{Binding Topic}" IsReadOnly="True"/>
-                    <DataGridTextColumn Header="Note" Binding="{Binding Note}" Width="*" />
-                </DataGrid.Columns>
+                <DataGridTextColumn Header="Note" Binding="{Binding Note}" Width="*" />
+            </DataGrid.Columns>
 
-             <!--DataGrid.RowStyle>
-                    <Style TargetType="DataGridRow">
+            <DataGrid.CellStyle>
+                    
+                    <Style TargetType="DataGridCell">
+                    <Setter Property="FontSize" Value="14"/>
+                    
                         <Style.Triggers>
-                            <DataTrigger Binding="{Binding Automatic}" Value="True">
-                      
-                                <Setter Property="FontStyle" Value="Italic"/>
+                        <DataTrigger Binding="{Binding Automatic}" Value="True">
+                            <Setter Property="FontStyle" Value="Italic"/>
+                               <Setter Property="Foreground"  Value="Blue" />
+                        
                         </DataTrigger>
                         <DataTrigger Binding="{Binding Automatic}" Value="False">
-                            <Setter Property="Foreground" Value="Black"/>
+                       
+                            <Setter Property="Foreground"  Value="Black" />
                         </DataTrigger>
                         <Trigger Property="IsSelected" Value="True">
-                             <Setter Property="Foreground"  Value="Red" />
+                            <Setter Property="Foreground"  Value="Black" />  <!-- Why is this ignored? -->
+                            <Setter Property="Background"  Value="LightBlue" />
+                            <Setter Property="BorderThickness" Value="0"/>
+                            
                         </Trigger>
                        </Style.Triggers> 
                     </Style >
-            </DataGrid.RowStyle   -->
-            </DataGrid>
+            </DataGrid.CellStyle>
+        </DataGrid>
 
 
-   
+
 
     </Grid>
 </UserControl>

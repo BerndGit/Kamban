@@ -1,24 +1,12 @@
-﻿using Kamban.ViewModels;
-using Kamban.ViewModels.Core;
+﻿using Kamban.ViewModels.Core;
 using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Globalization;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.IO;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 using Ui.Wpf.Common;
 using Ui.Wpf.Common.ShowOptions;
 using Ui.Wpf.Common.ViewModels;
+using Microsoft.Win32;
 
 namespace Kamban.Views
 {
@@ -27,17 +15,13 @@ namespace Kamban.Views
     /// </summary>
     public partial class LogView : UserControl, IView, IStretchedSizeView
     {
-    
-   
-
+  
         public LogView(LogViewModel viewModel)
         {
-
             InitializeComponent();
 
             ViewModel = viewModel;
             DataContext =  ViewModel;
-
         }
 
         public IViewModel ViewModel { get; set; }
@@ -64,11 +48,47 @@ namespace Kamban.Views
             ((LogViewModel)ViewModel).MakeNewEntry();
         }
 
-       
+        private void BuExport_Click(object sender, RoutedEventArgs e)
+        {
+            String FileName;
 
- 
+            SaveFileDialog saveFileDialog = new SaveFileDialog();
+            saveFileDialog.Filter = "Comma Separated File (*.csv)|*.csv";
+            saveFileDialog.ShowDialog();
+            Nullable<bool> result = saveFileDialog.ShowDialog();
+            if (result == true)
+            {
+                FileName = saveFileDialog.FileName;
+            }
+            else
+            {
+                return;
+            }
+            String outString = String.Join(";",
+                       "Date",
+                       "Time",
+                       "Row",
+                       "Column",
+                       "Automatic",
+                       "Topic",
+                       "Note") +"\r\n";
 
+            
+            foreach (LogEntryViewModel entry in ((LogViewModel)ViewModel).FilteredLogEntries)
+            {
+                String Line = String.Join(";",
+                    entry.Time.ToString("yyyy/mm/dd"),
+                    entry.Time.ToString("HH:mm:ss.Z"),
+                    entry.Row,
+                    entry.Column,
+                    entry.Automatic,
+                    entry.Topic,
+                    entry.Note
+                    ).Replace("\r\n", @"\r\n");
+                outString += Line + "\r\n";
+            }
 
-
+            File.WriteAllText(FileName, outString);
+        }
     }
 }
