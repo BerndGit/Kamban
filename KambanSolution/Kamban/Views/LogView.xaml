@@ -257,6 +257,7 @@
                       SelectionMode="Single"
                   AutoGenerateColumns="False"
                   ItemsSource="{Binding FilteredLogEntries}" 
+                  ScrollViewer.CanContentScroll="False"
                   SelectedItem="{Binding SelectedLogEntry, Mode=TwoWay, Delay=250}"
                       >
 

@@ -35,6 +35,7 @@
             dd:DragDrop.IsDragSource="True"
             dd:DragDrop.IsDropTarget="True"
             dd:DragDrop.DropHandler="{Binding}"
+            ScrollViewer.CanContentScroll="False"
             ContextMenuOpening="ContextMenu_ContextMenuOpening"
             MouseDoubleClick="mainListView_MouseDoubleClick"
             ContextMenu="{Binding CardContextMenu}"
