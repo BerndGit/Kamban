@@ -88,7 +88,9 @@
                                     FontSize="14"
                                     Margin="3, 0, 3, 0"
                                     Text="{Binding Path=Header}"
-                                    HorizontalAlignment="Left"/>
+                                    HorizontalAlignment="Left"
+                                    ToolTip="{Binding Path=Header}"
+                                    />
                             </StackPanel>
                             <StackPanel
                                 Visibility="{Binding ShowDescription, Converter={StaticResource BoolCvt}}"
@@ -97,7 +99,9 @@
                                 <Image
                                     RenderOptions.BitmapScalingMode="NearestNeighbor"
                                     Stretch="None"
-                                    Source="/images/letter.jpg"/>
+                                    Source="/images/letter.jpg"
+                                    ToolTip="{Binding Path=Body}"
+                                    />
                             </StackPanel>
                         </StackPanel>
                     </Border>
