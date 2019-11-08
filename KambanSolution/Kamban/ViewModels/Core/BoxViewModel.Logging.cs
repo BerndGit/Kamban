@@ -167,16 +167,24 @@ namespace Kamban.ViewModels.Core
             {
                 foreach (Change<CardViewModel> ccvm in c)
                 {
-                    LogEntries.Add(
-                        new LogEntryViewModel()
-                        {
-                            Time = DateTime.Now,
-                            ColumnId = ccvm.Item.Current.ColumnDeterminant,
-                            RowId = ccvm.Item.Current.RowDeterminant,
-                            BoardId = ccvm.Item.Current.BoardId,
-                            Topic = ccvm.Reason.ToString(),
-                            Note = ccvm.Item.Current.Header
-                        });
+                    LogEntryViewModel Entry = new LogEntryViewModel()
+                    {
+                        Time = DateTime.Now,
+                        ColumnId = ccvm.Item.Current.ColumnDeterminant,
+                        RowId = ccvm.Item.Current.RowDeterminant,
+                        BoardId = ccvm.Item.Current.BoardId,
+                        Topic = ccvm.Reason.ToString(),
+                        Note = ccvm.Item.Current.Header
+                    };
+
+                    Entry.Note = "Remove Card #" + ccvm.Item.Current.Id.ToString() + ": " + ccvm.Item.Current.Header + "\r\n";
+
+                    Entry.Column = Columns.Items.Where(x => { return (x.Id == Entry.ColumnId); }).First().Name;
+                    Entry.Row = Rows.Items.Where(x => { return (x.Id == Entry.RowId); }).First().Name;
+                    Entry.Board = Rows.Items.Where(x => { return (x.Id == Entry.BoardId); }).First().Name;
+
+                    LogEntries.Add(Entry);
+
                 }
             });
 
@@ -186,15 +194,24 @@ namespace Kamban.ViewModels.Core
                  foreach (Change<CardViewModel> ccvm in c)
                  {
                      foreach (CardViewModel cvm in ccvm.Range.ToList())
-                         LogEntries.Add(
-                                         new LogEntryViewModel()
-                                         {
-                                             Time = DateTime.Now,
-                                             ColumnId = cvm.ColumnDeterminant,
-                                             RowId = cvm.RowDeterminant,
-                                             Topic = ccvm.Reason.ToString(),
-                                             Note = cvm.Header
-                                         });
+                     {
+                         LogEntryViewModel Entry = new LogEntryViewModel()
+                         {
+                             Time = DateTime.Now,
+                             ColumnId = cvm.ColumnDeterminant,
+                             RowId = cvm.RowDeterminant,
+                             BoardId = cvm.BoardId,
+                             Topic = ccvm.Reason.ToString()
+                         };
+
+                         Entry.Note = "Remove Card #" + ccvm.Item.Current.Id.ToString() + ": " + ccvm.Item.Current.Header + "\r\n";
+
+                         Entry.Column = Columns.Items.Where(x => { return (x.Id == Entry.ColumnId); }).First().Name;
+                         Entry.Row = Rows.Items.Where(x => { return (x.Id == Entry.RowId); }).First().Name;
+                         Entry.Board = Rows.Items.Where(x => { return (x.Id == Entry.BoardId); }).First().Name;
+
+                         LogEntries.Add(Entry);
+                     }
                  }
              });
         }
