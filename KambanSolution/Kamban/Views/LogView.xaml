@@ -118,15 +118,14 @@
                         <ColumnDefinition Width="Auto"/>
                         <ColumnDefinition Width="Auto"/>
                         <ColumnDefinition Width="Auto"/>
-
+                        <ColumnDefinition Width="*"/>
                     </Grid.ColumnDefinitions>
                     <Grid.RowDefinitions>
                         <RowDefinition Height="Auto"/>
                         <RowDefinition Height="Auto"/>
                         <RowDefinition Height="Auto"/>
                         <RowDefinition Height="Auto"/>
-                        <RowDefinition Height="Auto"/>
-                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
 
                     </Grid.RowDefinitions>
 
@@ -219,19 +218,20 @@
                          SelectedDate="{Binding SelectedLogEntry.Time}"  />
 
                     <Label Content="Topic" Grid.Row="3" Grid.Column="0" Margin="5"/>
-                    <TextBox Grid.Row="3" Grid.Column="1" Grid.ColumnSpan="5" 
-                             HorizontalAlignment="Stretch" MinWidth="200"
+                    <TextBox Grid.Row="3" Grid.Column="1" Grid.ColumnSpan="8" 
+                             HorizontalAlignment="Stretch" 
                              Margin="5"
                              IsEnabled="{Binding EntryEditable}"
                           Text="{Binding SelectedLogEntry.Topic, UpdateSourceTrigger=PropertyChanged, Delay=500}">
                     </TextBox>
 
                     <Label Content="Note" Grid.Row="4" Grid.Column="0" Margin="5"/>
-                    <TextBox Grid.Row="4" Grid.Column="1" Grid.ColumnSpan="5" Margin="5"
+                    <TextBox Grid.Row="4" Grid.Column="1" Grid.ColumnSpan="8" Margin="5"
                              IsEnabled="{Binding EntryEditable}"
                              HorizontalAlignment="Stretch"
                              MinWidth="200" MinHeight="150"
                              VerticalScrollBarVisibility="Auto"
+                             HorizontalScrollBarVisibility="Auto"
                              MaxLines="999"
                              AcceptsReturn="true"
                              Text="{Binding SelectedLogEntry.Note, UpdateSourceTrigger=PropertyChanged, Delay=500}">
