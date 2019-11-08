@@ -307,6 +307,9 @@ namespace Kamban.ViewModels
                 .SetHotKey(ModifierKeys.Control, Key.H);
 
             shell.AddVMCommand("View", "Toggle SwimLane View", nameof(ToggleSwimLaneViewCommand), this)
+                .SetHotKey(ModifierKeys.Control, Key.S);
+
+            shell.AddInstanceCommand("View", "Show Log View", nameof(ShowLogViewCommand), this)
                 .SetHotKey(ModifierKeys.Control, Key.L);
 
             var request = (BoardViewRequest) viewRequest;
@@ -363,7 +366,8 @@ namespace Kamban.ViewModels
                 .ToList()
                 .ForEach(x => x.MenuCommand = shell.AddInstanceCommand("Boards", x.Name, nameof(SelectBoardCommand), this));
 
-            shell.AddInstanceCommand("View", "Show Log View", nameof(ShowLogViewCommand), this);
+
+                
 
             mon.LogicVerbose($"{nameof(BoardEditViewModel)}.{nameof(Initialize)} finished");
         }
