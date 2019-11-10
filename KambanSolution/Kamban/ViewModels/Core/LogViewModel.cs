@@ -277,7 +277,7 @@ namespace Kamban.ViewModels.Core
             Box.Cards
              .Connect()
              .Or(noCard.Connect())
-             .Sort(SortExpressionComparer<CardViewModel>.Ascending(x => x.Order))
+             .Sort(SortExpressionComparer<CardViewModel>.Ascending(x => x.Id))
              .Bind(out ReadOnlyObservableCollection<CardViewModel> temp3)
              .Subscribe();
 
