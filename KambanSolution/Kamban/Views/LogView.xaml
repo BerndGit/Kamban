@@ -218,12 +218,18 @@
                          SelectedDate="{Binding SelectedLogEntry.Time}"  />
 
                     <Label Content="Topic" Grid.Row="3" Grid.Column="0" Margin="5"/>
-                    <TextBox Grid.Row="3" Grid.Column="1" Grid.ColumnSpan="8" 
+                    <ComboBox Grid.Row="3" Grid.Column="1" Grid.ColumnSpan="8" x:Name="cbTopic"
                              HorizontalAlignment="Stretch" 
                              Margin="5"
+                             IsEditable="True"
                              IsEnabled="{Binding EntryEditable}"
-                          Text="{Binding SelectedLogEntry.Topic, UpdateSourceTrigger=PropertyChanged, Delay=500}">
-                    </TextBox>
+                             
+                             Text="{Binding SelectedLogEntry.Topic, UpdateSourceTrigger=PropertyChanged, Delay=500}"
+                             ItemsSource="{Binding TopicProposals }"
+                             
+                        >
+                             
+                    </ComboBox>
 
                     <Label Content="Note" Grid.Row="4" Grid.Column="0" Margin="5"/>
                     <TextBox Grid.Row="4" Grid.Column="1" Grid.ColumnSpan="8" Margin="5"

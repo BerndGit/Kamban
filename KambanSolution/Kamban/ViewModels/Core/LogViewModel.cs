@@ -24,7 +24,7 @@ using Ui.Wpf.Common.ViewModels;
 
 namespace Kamban.ViewModels.Core
 {
-    public partial class LogViewModel : ViewModelBase, IInitializableViewModel
+    public partial class LogViewModel : ViewModelBase, IInitializableViewModel 
     {
         public const string LogViewId = "KambanLogView";
 
@@ -50,7 +50,11 @@ namespace Kamban.ViewModels.Core
         [Reactive] public ColumnViewModel EdtSelectedColumn { get; set; }
         [Reactive] public RowViewModel EdtSelectedRow { get; set; }
         [Reactive] public CardViewModel EdtSelectedCard { get; set; }
+
+      
+
         [Reactive] public String EdtTopic { get; set; }
+            
         [Reactive] public String EdtNote { get; set; }
         [Reactive] public DateTime EdtTime { get; set; }
 
@@ -71,17 +75,26 @@ namespace Kamban.ViewModels.Core
 
         private LogEntryViewModel _SelectedLogEntry;
         public LogEntryViewModel SelectedLogEntry
-        {
+        { 
             get => _SelectedLogEntry;
             set
-            {              
-                this.RaiseAndSetIfChanged(ref _SelectedLogEntry, value);
+            {
+                if (_SelectedLogEntry == value) return;
+
+                this.RaisePropertyChanging(nameof(SelectedLogEntry));
+                _SelectedLogEntry = value;
+                
+                this.RaisePropertyChanged(nameof(SelectedLogEntry));
                 this.RaisePropertyChanged(nameof(SelectedLogEntryColumn));
                 this.RaisePropertyChanged(nameof(SelectedLogEntryRow));
                 this.RaisePropertyChanged(nameof(SelectedLogEntryCard));
                 this.RaisePropertyChanged(nameof(EntryEditable));
+                this.RaisePropertyChanged(nameof(EdtTopic));
+                this.RaisePropertyChanged(nameof(EdtTopic));
+                this.RaisePropertyChanged(nameof(EdtNote));
+                this.RaisePropertyChanged(nameof(EdtTime));
             }
-        }
+        } 
 
         private ColumnViewModel _SelectedLogEntryColumn;
         public ColumnViewModel SelectedLogEntryColumn
@@ -90,7 +103,7 @@ namespace Kamban.ViewModels.Core
             {
                 try
                 {
-                    return Box.Columns.Items.Where(col => (col.Id == _SelectedLogEntry.ColumnId)).First();
+                    return Box.Columns.Items.Where(col => (col.Id == SelectedLogEntry.ColumnId)).First();
                 }
                 catch
                 {
@@ -100,17 +113,17 @@ namespace Kamban.ViewModels.Core
             }
             set
             {
-                if (_SelectedLogEntry != null)
+                if (SelectedLogEntry != null)
                 {
                     if (value == null)
                     {
-                        _SelectedLogEntry.ColumnId = -1;
-                        _SelectedLogEntry.Column = "";
+                        SelectedLogEntry.ColumnId = -1;
+                        SelectedLogEntry.Column = "";
                     }
                     else
                     {
-                        _SelectedLogEntry.Column = value.Name;
-                        _SelectedLogEntry.ColumnId = value.Id;
+                        SelectedLogEntry.Column = value.Name;
+                        SelectedLogEntry.ColumnId = value.Id;
                         
                     }
                 }
@@ -127,7 +140,7 @@ namespace Kamban.ViewModels.Core
             {
                 try
                 {
-                    return Box.Rows.Items.Where(col => (col.Id == _SelectedLogEntry.RowId)).First();
+                    return Box.Rows.Items.Where(col => (col.Id == SelectedLogEntry.RowId)).First();
                 }
                 catch
                 {
@@ -136,17 +149,17 @@ namespace Kamban.ViewModels.Core
             }
             set
             {
-                if (_SelectedLogEntry != null)
+                if (SelectedLogEntry != null)
                 {
                     if (value == null)
                     {
-                        _SelectedLogEntry.RowId = -1;
-                        _SelectedLogEntry.Row = "";
+                        SelectedLogEntry.RowId = -1;
+                        SelectedLogEntry.Row = "";
                     }
                     else
                     {
-                        _SelectedLogEntry.Row = value.Name;
-                        _SelectedLogEntry.RowId = value.Id;
+                        SelectedLogEntry.Row = value.Name;
+                        SelectedLogEntry.RowId = value.Id;
                         
                     }
                 }
@@ -163,7 +176,7 @@ namespace Kamban.ViewModels.Core
             {
                 try
                 {
-                    return Box.Cards.Items.Where(col => (col.Id == _SelectedLogEntry.CardId)).First();
+                    return Box.Cards.Items.Where(col => (col.Id == SelectedLogEntry.CardId)).First();
                 }
                 catch
                 {
@@ -176,11 +189,11 @@ namespace Kamban.ViewModels.Core
                 {
                     if (value == null)
                     {
-                        _SelectedLogEntry.ColumnId = -1;
+                        SelectedLogEntry.ColumnId = -1;
                     }
                     else
                     {
-                        _SelectedLogEntry.CardId = value.Id;
+                        SelectedLogEntry.CardId = value.Id;
                         
                     }
                 }
@@ -195,11 +208,8 @@ namespace Kamban.ViewModels.Core
 
         ///      public ReactiveCommand<Unit, Unit> UpdateFilteredList { get; private set; }
 
-        private void UpdateFilteredListExecute()
-        {
-            System.Windows.MessageBox.Show("SelectedRowChangedExecute");
+        public ReadOnlyObservableCollection<String> TopicProposals { get; set;  }
 
-        }
 
         private Func<LogEntryViewModel, bool> MakeRowFilter(RowViewModel row)
         {
@@ -227,6 +237,19 @@ namespace Kamban.ViewModels.Core
             if (card.Id == -1) return logEntry => true;
             return logEntry => logEntry.CardId == card.Id;
         }
+
+        private Func<String, bool> TopicProposalFilter(String topic)
+        {
+           //  if (topic != null)  MessageBox.Show("topic = " + topic); 
+           //  else MessageBox.Show("topic = " +"null");
+
+            if (topic == null) return _topic => true;
+            if (topic.Length == 0) return _topic => true;
+            return _topic => (_topic !=null) ? _topic.ToUpper().Contains(topic.Trim().ToUpper()) : false;
+            
+
+        }
+        
 
         private class EntryTimeComparer : IComparer<ILogEntry>
         {
@@ -305,6 +328,29 @@ namespace Kamban.ViewModels.Core
                 .Bind(out ReadOnlyObservableCollection<LogEntryViewModel> temp4)
                 .Subscribe();
             FilteredLogEntries = temp4;
+
+           IObservable<Func<string, bool>> observableTopicProposalFilter =
+                        this.WhenAnyValue(x => x.SelectedLogEntry.Topic)
+  //                      .Throttle(TimeSpan.FromMilliseconds(100))
+                        .Select(TopicProposalFilter);
+
+           observableTopicProposalFilter.Subscribe(/* x => { System.Windows.MessageBox.Show("observableTopicProposalFilter updated"); }*/  );
+                  
+
+
+
+
+
+                Box.LogEntries.Connect()
+                       .Transform(x => x.Topic)
+                       .Sort(SortExpressionComparer<String>.Ascending(t => t))
+                       .Filter(observableTopicProposalFilter)
+                       .Distinct(x => x)
+                       .Bind(out ReadOnlyObservableCollection<String> temp5)
+                       .Subscribe();
+
+                   TopicProposals = temp5;
+
 
             //// Add/Edit entries ==================================================================
 

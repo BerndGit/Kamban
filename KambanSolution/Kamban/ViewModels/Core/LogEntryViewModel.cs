@@ -79,6 +79,7 @@ namespace Kamban.ViewModels.Core
                 {
                     this.Topicvalue = value;
                     NotifyPropertyChanged();
+                  
                 }
             }
         }
