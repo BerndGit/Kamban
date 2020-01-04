@@ -8,6 +8,7 @@ using Ui.Wpf.Common.ShowOptions;
 using Ui.Wpf.Common.ViewModels;
 using Microsoft.Win32;
 
+
 namespace Kamban.Views
 {
     /// <summary>
@@ -47,6 +48,9 @@ namespace Kamban.Views
         {
             ((LogViewModel)ViewModel).MakeNewEntry();
         }
+
+        
+        
 
         private void BuExport_Click(object sender, RoutedEventArgs e)
         {
@@ -89,6 +93,21 @@ namespace Kamban.Views
             }
 
             File.WriteAllText(FileName, outString);
+        }
+
+        private void CbTopic_GotFocus(object sender, RoutedEventArgs e)
+        {
+            if (e.OriginalSource.GetType() == typeof(ComboBoxItem))
+                return;
+
+            try
+            {
+                ComboBox cb = (ComboBox)sender;
+                cb.IsDropDownOpen = true;
+            }
+            catch { };
+
+
         }
     }
 }

@@ -3,6 +3,8 @@
     public interface IDim
     {
         int Id { get; set; }
+
+        int BoardId { get; set; }
         string Name { get; set; }
         string FullName { get; }
         int Size { get; set; }

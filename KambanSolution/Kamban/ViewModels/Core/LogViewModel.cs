@@ -240,14 +240,9 @@ namespace Kamban.ViewModels.Core
 
         private Func<String, bool> TopicProposalFilter(String topic)
         {
-           //  if (topic != null)  MessageBox.Show("topic = " + topic); 
-           //  else MessageBox.Show("topic = " +"null");
-
             if (topic == null) return _topic => true;
             if (topic.Length == 0) return _topic => true;
             return _topic => (_topic !=null) ? _topic.ToUpper().Contains(topic.Trim().ToUpper()) : false;
-            
-
         }
         
 
@@ -260,6 +255,18 @@ namespace Kamban.ViewModels.Core
                 return x.Time.CompareTo(y.Time)* Direction;
             }
         }
+
+        public String GetBoardName(IDim rowcol)
+        {
+            try { 
+                BoardViewModel board = Box.Boards.Items.Where(x => (x.Id == rowcol.BoardId)).First();
+                return board.Name;
+            } catch   // capture all possible nullpointer exceptions
+            {
+                return null;
+            }
+        }
+
 
         public void Initialize(ViewRequest viewRequest)
         {
@@ -307,19 +314,20 @@ namespace Kamban.ViewModels.Core
             AvailableCards = temp3;
 
 
-            var observableRowFilter = this.WhenAnyValue(viewModel => viewModel.FltSelectedRow)
+            var observableRowFilter = this.WhenAnyValue(viewModel => viewModel.FltSelectedRow)            
                  .Select(MakeRowFilter);
 
-            var observableColFilter = this.WhenAnyValue(viewModel => viewModel.FltSelectedColumn)
+            var observableColFilter = this.WhenAnyValue(viewModel => viewModel.FltSelectedColumn)             
                  .Select(MakeColumnFilter);
 
-            var observableAutomaticFilter = this.WhenAnyValue(viewModel => viewModel.FltAutomatic)
+            var observableAutomaticFilter = this.WhenAnyValue(viewModel => viewModel.FltAutomatic)               
                  .Select(MakeAutomaticFilter);
 
-            var observableCardFilter = this.WhenAnyValue(viewModel => viewModel.FltSelectedCard)
+            var observableCardFilter = this.WhenAnyValue(viewModel => viewModel.FltSelectedCard)              
                 .Select(MakeCardFilter);
 
             Box.LogEntries.Connect()
+                .Throttle(TimeSpan.FromMilliseconds(10))
                 .Filter(observableRowFilter)
                 .Filter(observableColFilter)
                 .Filter(observableAutomaticFilter)
@@ -329,33 +337,33 @@ namespace Kamban.ViewModels.Core
                 .Subscribe();
             FilteredLogEntries = temp4;
 
-           IObservable<Func<string, bool>> observableTopicProposalFilter =
-                        this.WhenAnyValue(x => x.SelectedLogEntry.Topic)
-  //                      .Throttle(TimeSpan.FromMilliseconds(100))
-                        .Select(TopicProposalFilter);
+            IObservable<Func<string, bool>> observableTopicProposalFilter =
+                         this.WhenAnyValue(x => x.SelectedLogEntry.Topic)
+                         .Select(top => TopicProposalFilter(top));
+                        
 
-           observableTopicProposalFilter.Subscribe(/* x => { System.Windows.MessageBox.Show("observableTopicProposalFilter updated"); }*/  );
-                  
+           observableTopicProposalFilter.Subscribe( x => { /* System.Windows.MessageBox.Show("observableTopicProposalFilter updated");  */ }  );
 
-
-
-
-
-                Box.LogEntries.Connect()
+           Box.LogEntries
+                       .Connect()
                        .Transform(x => x.Topic)
-                       .Sort(SortExpressionComparer<String>.Ascending(t => t))
                        .Filter(observableTopicProposalFilter)
-                       .Distinct(x => x)
+                       .Sort(SortExpressionComparer<String>.Ascending(t => t))
+                       .DistinctValues(x => x)
                        .Bind(out ReadOnlyObservableCollection<String> temp5)
-                       .Subscribe();
+                       .Subscribe(x => { /* System.Windows.MessageBox.Show("Proposals  updated"); */});
 
-                   TopicProposals = temp5;
+            TopicProposals = temp5;
+
+       
 
 
             //// Add/Edit entries ==================================================================
 
             _CurrTime.Where(_ => AddCurrentTIme).Subscribe(t => { EdtTime = t; });
         }
+
+
 
         public void MakeNewEntry()
         {
