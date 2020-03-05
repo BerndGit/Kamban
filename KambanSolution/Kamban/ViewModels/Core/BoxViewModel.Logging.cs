@@ -140,7 +140,7 @@ namespace Kamban.ViewModels.Core
 
                         Entry.Column = Columns.Items.Where(x => { return (x.Id == Entry.ColumnId); }).First().Name;
                         Entry.Row = Rows.Items.Where(x => { return (x.Id == Entry.RowId); }).First().Name;
-                        Entry.Board = Rows.Items.Where(x => { return (x.Id == Entry.BoardId); }).First().Name;
+                        Entry.Board = Boards.Items.Where(x => { return (x.Id == Entry.BoardId); }).First().Name;
 
                         LogEntries.Add(Entry);
 
@@ -181,7 +181,7 @@ namespace Kamban.ViewModels.Core
 
                     Entry.Column = Columns.Items.Where(x => { return (x.Id == Entry.ColumnId); }).First().Name;
                     Entry.Row = Rows.Items.Where(x => { return (x.Id == Entry.RowId); }).First().Name;
-                    Entry.Board = Rows.Items.Where(x => { return (x.Id == Entry.BoardId); }).First().Name;
+                    Entry.Board = Boards.Items.Where(x => { return (x.Id == Entry.BoardId); }).First().Name;
 
                     LogEntries.Add(Entry);
 
@@ -208,7 +208,7 @@ namespace Kamban.ViewModels.Core
 
                          Entry.Column = Columns.Items.Where(x => { return (x.Id == Entry.ColumnId); }).First().Name;
                          Entry.Row = Rows.Items.Where(x => { return (x.Id == Entry.RowId); }).First().Name;
-                         Entry.Board = Rows.Items.Where(x => { return (x.Id == Entry.BoardId); }).First().Name;
+                         Entry.Board = Boards.Items.Where(x => { return (x.Id == Entry.BoardId); }).First().Name;
 
                          LogEntries.Add(Entry);
                      }
@@ -261,7 +261,7 @@ namespace Kamban.ViewModels.Core
 
                 Entry.Column = Columns.Items.Where(x => { return (x.Id == Entry.ColumnId); }).First().Name;
                 Entry.Row = Rows.Items.Where(x => { return (x.Id == Entry.RowId); }).First().Name;
-                Entry.Board = Rows.Items.Where(x => { return (x.Id == Entry.BoardId); }).First().Name;
+                Entry.Board = Boards.Items.Where(x => { return (x.Id == Entry.BoardId); }).First().Name;
 
                 Entry.NewValue = cvm.GetType().GetProperty(c.PropertyName).GetValue(cvm, null)?.ToString();
                 Entry.Note = "Card #" + cvm.Id.ToString() +": " + cvm.Header + "\r\n" +

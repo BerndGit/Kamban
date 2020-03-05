@@ -4,12 +4,24 @@ using Kamban.ViewRequests;
 using ReactiveUI;
 using ReactiveUI.Fody.Helpers;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Collections.Specialized;
+using System.ComponentModel;
+using System.Diagnostics;
 using System.Linq;
+using System.Reactive;
 using System.Reactive.Linq;
+using System.Reactive.Subjects;
+using System.Text;
+using System.Threading.Tasks;
+using System.Windows;
 using Ui.Wpf.Common;
+using Ui.Wpf.Common.ShowOptions;
 using Ui.Wpf.Common.ViewModels;
+
+
 
 
 namespace Kamban.ViewModels.Core
@@ -20,6 +32,8 @@ namespace Kamban.ViewModels.Core
 
         public ReadOnlyObservableCollection<LogEntryViewModel> LogEntries { get; set; } // = new ReadOnlyObservableCollection<ILogEntry>();
         public ReadOnlyObservableCollection<LogEntryViewModel> FilteredLogEntries { get; set; }
+
+
 
         public BoxViewModel Box;
 
@@ -35,7 +49,7 @@ namespace Kamban.ViewModels.Core
         [Reactive] public ColumnViewModel FltSelectedColumn { get; set; }
         [Reactive] public RowViewModel FltSelectedRow { get; set; }
         [Reactive] public CardViewModel FltSelectedCard { get; set; }
-        [Reactive] public Nullable<bool> FltAutomatic { get; set; } = false;
+        [Reactive] public Nullable<bool> FltAutomatic { get; set; }
 
         [Reactive] public ColumnViewModel EdtSelectedColumn { get; set; }
         [Reactive] public RowViewModel EdtSelectedRow { get; set; }
@@ -230,9 +244,17 @@ namespace Kamban.ViewModels.Core
 
         private Func<String, bool> TopicProposalFilter(String topic)
         {
+       //     System.Windows.MessageBox.Show("TopicProposalFilter('" + topic + "')");
             if (topic == null) return _topic => true;
-            if (topic.Length == 0) return _topic => true;
-            return _topic => (_topic !=null) ? _topic.ToUpper().Contains(topic.Trim().ToUpper()) : false;
+            if (topic.Trim().Length == 0) return _topic => true;
+
+            return _topic =>
+            {
+   /*           System.Windows.MessageBox.Show("Filtering: '"+ _topic + "'"); */
+                return (_topic != null) ?
+                    ((_topic.Trim().Length > 0) ? _topic.ToUpper().Contains(topic.Trim().ToUpper()) : false)
+                    : false;
+            };
         }
         
 
@@ -305,23 +327,19 @@ namespace Kamban.ViewModels.Core
 
 
             var observableRowFilter = this.WhenAnyValue(viewModel => viewModel.FltSelectedRow)
-                .Throttle(TimeSpan.FromMilliseconds(250))
-                 .ObserveOnDispatcher()
-                .Select(MakeRowFilter);
+                .Throttle(TimeSpan.FromMilliseconds(1))
+                 .Select(MakeRowFilter);
 
             var observableColFilter = this.WhenAnyValue(viewModel => viewModel.FltSelectedColumn)
-                 .Throttle(TimeSpan.FromMilliseconds(250))
-                 .ObserveOnDispatcher()
+                .Throttle(TimeSpan.FromMilliseconds(1))
                  .Select(MakeColumnFilter);
 
             var observableAutomaticFilter = this.WhenAnyValue(viewModel => viewModel.FltAutomatic)
-                 .Throttle(TimeSpan.FromMilliseconds(250))
-                 .ObserveOnDispatcher()
+                .Throttle(TimeSpan.FromMilliseconds(1))
                  .Select(MakeAutomaticFilter);
 
             var observableCardFilter = this.WhenAnyValue(viewModel => viewModel.FltSelectedCard)
-                .Throttle(TimeSpan.FromMilliseconds(250))
-                .ObserveOnDispatcher()
+                .Throttle(TimeSpan.FromMilliseconds(1))
                 .Select(MakeCardFilter);
 
             Box.LogEntries.Connect()
@@ -330,27 +348,36 @@ namespace Kamban.ViewModels.Core
                 .Filter(observableAutomaticFilter)
                 .Filter(observableCardFilter)
                 .Sort(new EntryTimeComparer(){ Direction = -1})
+                .ObserveOnDispatcher()
                 .Bind(out ReadOnlyObservableCollection<LogEntryViewModel> temp4)
                 .Subscribe();
             FilteredLogEntries = temp4;
 
             IObservable<Func<string, bool>> observableTopicProposalFilter =
                          this.WhenAnyValue(x => x.SelectedLogEntry.Topic)
+                         .Throttle(TimeSpan.FromMilliseconds(200))
+                         .ObserveOnDispatcher()
                          .Select(top => TopicProposalFilter(top));
+
                         
 
-           observableTopicProposalFilter.Subscribe( x => { /* System.Windows.MessageBox.Show("observableTopicProposalFilter updated");  */ }  );
+           observableTopicProposalFilter.Subscribe( x => { /*  System.Windows.MessageBox.Show("observableTopicProposalFilter updated"); */ }  );
 
-           Box.LogEntries
-                       .Connect()
-                       .Transform(x => x.Topic)
-                       .Filter(observableTopicProposalFilter)
-                       .Sort(SortExpressionComparer<String>.Ascending(t => t))
-                       .DistinctValues(x => x)
-                       .Bind(out ReadOnlyObservableCollection<String> temp5)
-                       .Subscribe(x => { /* System.Windows.MessageBox.Show("Proposals  updated"); */});
+               Box.LogEntries
+                              .Connect()                      
+                              .Transform(x => x.Topic)     
+                              
+                              .DistinctValues(x => x ?? "")
+                              .Sort(SortExpressionComparer<String>.Ascending(t => t))
+                              .Filter(observableTopicProposalFilter)
+                              .ObserveOnDispatcher()
 
+                              .Bind(out ReadOnlyObservableCollection<String> temp5)
+                              .Subscribe(x => { /*  System.Windows.MessageBox.Show("Proposals  updated"); */ }); 
+            
             TopicProposals = temp5;
+
+            //     TopicProposals = new ReadOnlyObservableCollection<String>(new ObservableCollection<String>()); // temp5;
 
        
 
