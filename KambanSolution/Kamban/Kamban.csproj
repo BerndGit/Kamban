@@ -8,9 +8,14 @@
     <AssemblyTitle>Kamban</AssemblyTitle>
     <AssemblyProduct>Kamban</AssemblyProduct>
     <AssemblyCopyright>Copyright © 2018</AssemblyCopyright>
-    <Version>0.6</Version>
+    <Version>0.7</Version>
     <StartupObject />
     <ApplicationIcon>Tree-256.ico</ApplicationIcon>
+    <Company>Topols</Company>
+    <Authors>Topols</Authors>
+    <PackageProjectUrl>http://topols.io</PackageProjectUrl>
+    <PackageIcon>Tree-256.ico</PackageIcon>
+    <PackageIconUrl />
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
@@ -52,6 +57,12 @@
       <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+
+
+    <None Include="Tree-256.ico">
+      <Pack>True</Pack>
+      <PackagePath></PackagePath>
+    </None>
     <Page Include="**\*.xaml" SubType="Designer" Generator="MSBuild:UpdateDesignTimeXaml" Exclude="App.xaml" />
     <None Remove="Views\LogView.xaml" />
     <Compile Update="**\*.xaml.cs" SubType="Code" DependentUpon="%(Filename)" />
@@ -67,8 +78,7 @@
     <PackageReference Include="gong-wpf-dragdrop" Version="2.0.4" />
     <PackageReference Include="MahApps.Metro.IconPacks" Version="2.3.0" />
     <PackageReference Include="Monik.Common" Version="1.0.4" />
-    <PackageReference Include="Newtonsoft.Json" Version="12.0.2" />
-    <PackageReference Include="squirrel.windows" Version="1.9.1" />
+    <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
     <PackageReference Include="Ui.Wpf.Common" Version="1.0.34" />
   </ItemGroup>
   <ItemGroup>
