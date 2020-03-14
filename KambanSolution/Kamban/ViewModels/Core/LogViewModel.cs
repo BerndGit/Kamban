@@ -231,7 +231,7 @@ namespace Kamban.ViewModels.Core
         private Func<String, bool> TopicProposalFilter(String topic)
         {
             if (topic == null) return _topic => true;
-            if (topic.Length == 0) return _topic => true;
+            if ((topic.Trim()).Length == 0) return _topic => true;
             return _topic => (_topic !=null) ? _topic.ToUpper().Contains(topic.Trim().ToUpper()) : false;
         }
         
@@ -335,17 +335,20 @@ namespace Kamban.ViewModels.Core
             FilteredLogEntries = temp4;
 
             IObservable<Func<string, bool>> observableTopicProposalFilter =
-                         this.WhenAnyValue(x => x.SelectedLogEntry.Topic)
-                         .Select(top => TopicProposalFilter(top));
+                          this.WhenAnyValue(x => x.SelectedLogEntry.Topic)
+                        //  .Throttle(TimeSpan.FromMilliseconds(100))
+                    //      .ObserveOnDispatcher()
+                          .Select((top,i) => { return TopicProposalFilter(top); });
                         
 
            observableTopicProposalFilter.Subscribe( x => { /* System.Windows.MessageBox.Show("observableTopicProposalFilter updated");  */ }  );
 
-           Box.LogEntries
-                       .Connect()
-                       .Transform(x => x.Topic)
-                       .Filter(observableTopicProposalFilter)
-                       .Sort(SortExpressionComparer<String>.Ascending(t => t))
+            Box.LogEntries
+                        .Connect()
+                        .AutoRefresh(x => x.Topic)
+                        .Transform(x => x?.Topic??"", true)
+                        .Filter(observableTopicProposalFilter,DynamicData.ListFilterPolicy.ClearAndReplace)
+                        .Sort(SortExpressionComparer<String>.Ascending(t => t))
                        .DistinctValues(x => x)
                        .Bind(out ReadOnlyObservableCollection<String> temp5)
                        .Subscribe(x => { /* System.Windows.MessageBox.Show("Proposals  updated"); */});

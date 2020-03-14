@@ -364,8 +364,9 @@ namespace Kamban.ViewModels.Core
            observableTopicProposalFilter.Subscribe( x => { /*  System.Windows.MessageBox.Show("observableTopicProposalFilter updated"); */ }  );
 
                Box.LogEntries
-                              .Connect()                      
-                              .Transform(x => x.Topic)     
+                              .Connect()       
+                              .AutoRefresh(x => x.Topic) 
+                              .Transform(x => x.Topic,true)     
                               
                               .DistinctValues(x => x ?? "")
                               .Sort(SortExpressionComparer<String>.Ascending(t => t))

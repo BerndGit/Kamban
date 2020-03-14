@@ -247,7 +247,7 @@ namespace Kamban.ViewModels
                 .Connect()
                 .AutoRefresh()
                 .Filter(x => x.BoardId == CurrentBoard.Id)
-                .Transform(x => x as ICard);
+                .Transform(x => x as ICard, true);
 
             Box.Cards
                 .Connect()
