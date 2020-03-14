@@ -12,7 +12,13 @@ namespace Kamban.Repository.LiteDb
 
         public LiteDbRepository(string uri)
         {
-            db = new LiteDatabase(uri);
+            var connStr = new ConnectionString()
+            {
+                Filename = uri,
+                Upgrade = true
+            };
+
+            db = new LiteDatabase(connStr);
         }
 
         public async Task<Box> Load()
@@ -111,7 +117,7 @@ namespace Kamban.Repository.LiteDb
             return Task.Run(() =>
             {
                 var rows = db.GetCollectionByType<Row>();
-                rows.Delete(x => x.Id == rowId);
+                rows.DeleteMany(x => x.Id == rowId);
             });
         }
 
@@ -120,7 +126,7 @@ namespace Kamban.Repository.LiteDb
             return Task.Run(() =>
             {
                 var columns = db.GetCollectionByType<Column>();
-                columns.Delete(x => x.Id == columnId);
+                columns.DeleteMany(x => x.Id == columnId);
             });
         }
 
@@ -129,7 +135,7 @@ namespace Kamban.Repository.LiteDb
             return Task.Run(() =>
             {
                 var cards = db.GetCollectionByType<Card>();
-                cards.Delete(x => x.Id == cardId);
+                cards.DeleteMany(x => x.Id == cardId);
             });
         }
 
@@ -138,7 +144,7 @@ namespace Kamban.Repository.LiteDb
             return Task.Run(() =>
             {
                 var boards = db.GetCollectionByType<Board>();
-                boards.Delete(x => x.Id == boardId);
+                boards.DeleteMany(x => x.Id == boardId);
             });
         }
 
@@ -159,7 +165,7 @@ namespace Kamban.Repository.LiteDb
             return Task.Run(() =>
             {
                 var logs = db.GetCollectionByType<LogEntry>();
-                logs.Delete(x => x.Id == EntryId);
+                logs.DeleteMany(x => x.Id == EntryId);
             });
             
         }
