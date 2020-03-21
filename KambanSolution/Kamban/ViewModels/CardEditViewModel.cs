@@ -56,22 +56,21 @@ namespace Kamban.ViewModels
         
         [Reactive] public ColorItem SelectedColor { get; set; }
 
+    //    IObservable<bool> cardFilled;
+
         public CardEditViewModel()
         {
             Card = null;
 
-            var cardFilled = this.WhenAnyValue(
+           var  cardFilled = this.WhenAnyValue(
                 t => t.Head, t => t.SelectedRow, t => t.SelectedColumn, t => t.SelectedColor,
                 (sh, sr, sc, cc) =>
                 sr != null && sc != null && !string.IsNullOrEmpty(sh) && cc != null);
 
-            SaveCommand = ReactiveCommand.Create(SaveCommandExecute, cardFilled);
+            SaveCommand = ReactiveCommand.Create(SaveCommandExecute,cardFilled);
 
-            CancelCommand = ReactiveCommand.Create(() =>
-            {
-                Result = CardEditResult.None;
-                IsOpened = false;
-            });
+            CancelCommand = ReactiveCommand.Create(CancelCommandExecute
+            );
 
             EnterCommand = ReactiveCommand.Create(EnterCommandExecute);
 
@@ -79,6 +78,12 @@ namespace Kamban.ViewModels
                         .Where(x => x != null)
                         .Subscribe(_ => Background = SelectedColor.Brush);
         }
+
+        public CardEditViewModel(ViewRequest viewRequest) : this()
+        {
+            Initialize(viewRequest);
+        }
+
 
         private void EnterCommandExecute()
         {
@@ -108,7 +113,7 @@ namespace Kamban.ViewModels
 
         private void SaveCommandExecute()
         {
-            if (Card == null)
+           if (Card == null)
                 Card = new CardViewModel
                 {
                     Id = 0,
@@ -127,7 +132,15 @@ namespace Kamban.ViewModels
             IsOpened = false;
         }
 
-        public void UpdateViewModel()
+        public void CancelCommandExecute()
+        {
+            
+                Result = CardEditResult.None;
+                IsOpened = false;
+            
+        }
+
+            public void UpdateViewModel()
         {
             box.Columns
                 .Connect()

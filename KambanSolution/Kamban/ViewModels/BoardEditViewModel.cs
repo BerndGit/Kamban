@@ -3,6 +3,7 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Reactive;
 using System.Reactive.Linq;
+using System.Threading.Tasks;
 using System.Windows.Controls;
 using System.Windows.Input;
 using AutoMapper;
@@ -56,13 +57,17 @@ namespace Kamban.ViewModels
         public ReactiveCommand<ICard, Unit> MoveCardCommand { get; set; }
         public ReactiveCommand<ICard, Unit> DeleteCardCommand { get; set; }
 
+        public ReactiveCommand<ICard, Unit> CardEditWindowCommand { get; set; }
+
         [Reactive] public CardEditViewModel CardEditFlyout { get; set; }
         [Reactive] public CardMoveViewModel CardMoveFlyout { get; set; }
         [Reactive] public HeaderPropertyViewModel HeaderPropertyFlyout { get; set; }
 
         [Reactive] public object HeadOfContextMenu { get; set; }
 
-        public ReactiveCommand<IDim, Unit> HeaderPropertyChanged { get; set; }
+        // public ReactiveCommand<IDim, Unit> HeaderPropertyChanged { get; set; }
+
+        public ReactiveCommand<IDim, Unit> HeaderPropertyChangedWindow { get; set; }
         public ReactiveCommand<IDim, Unit> HeadDeleteCommand { get; set; }
         public ReactiveCommand<IDim, Unit> HeadDeleteCardsCommand { get; set; }
         public ReactiveCommand<IDim, Unit> InsertHeadBeforeCommand { get; set; }
@@ -108,8 +113,9 @@ namespace Kamban.ViewModels
 
             BoardsInFile = null;
             CardEditFlyout = new CardEditViewModel();
+
             CardMoveFlyout = new CardMoveViewModel(mapper);
-            HeaderPropertyFlyout = new HeaderPropertyViewModel();
+            /* HeaderPropertyFlyout = new HeaderPropertyViewModel();
 
             HeaderPropertyChanged = ReactiveCommand.Create<IDim>(c =>
             {
@@ -120,13 +126,50 @@ namespace Kamban.ViewModels
                     BoardVM = this,
                     Board = CurrentBoard
                 }); 
+            }); */
+
+            HeaderPropertyChangedWindow = ReactiveCommand.Create<IDim>( c =>
+            {
+
+                HeaderPropertyViewRequest request = new HeaderPropertyViewRequest()
+                {
+                    Header = c,
+                    Box = this.Box,
+                    BoardVM = this,
+                    Board = CurrentBoard
+                };
+          
+                HeaderPropertyViewModel hpvm = new HeaderPropertyViewModel(request);
+                HeaderPropertyWindow hpw = new HeaderPropertyWindow(hpvm);
+                hpw.ShowDialog();
             });
 
             ToggleShowCardIdsCommand = ReactiveCommand.Create(() => { ShowCardIds = !ShowCardIds; });
 
             ToggleSwimLaneViewCommand = ReactiveCommand.Create(() => { SwimLaneView = !SwimLaneView; });
 
-            CardClickCommand = ReactiveCommand.Create<ICard>(c => ShowFlyout(CardEditFlyout, c));
+            CardEditWindowCommand = ReactiveCommand.Create<ICard>(c =>
+            {
+               CardViewRequest request = new CardViewRequest()
+                {
+                    Box = this.Box,
+                    ColumnId = c.ColumnDeterminant,
+                    RowId = c.RowDeterminant,
+                    Card = c as CardViewModel,
+                    BoardVm = this,
+                    Board = CurrentBoard
+                };
+
+                CardEditViewModel cevm = new CardEditViewModel(request);
+
+                CardEditWindow cew= new CardEditWindow(cevm);
+                cew.ShowDialog();
+            });
+
+
+
+            CardClickCommand = ReactiveCommand.Create<ICard>(c => ShowCardWindow(CardEditFlyout, c));
+
             NormalizeGridCommand = ReactiveCommand.Create(() => { });
 
             MoveCardCommand = ReactiveCommand.Create<ICard>(c => ShowFlyout(CardMoveFlyout, c));
@@ -146,10 +189,13 @@ namespace Kamban.ViewModels
             InsertHeadAfterCommand = ReactiveCommand
                 .Create<IDim>(async head => await InsertHeadAfterCommandExecute(head));
 
-            CreateCardCommand = ReactiveCommand.Create(() => ShowFlyout(CardEditFlyout, null));
-
+            CreateCardCommand = ReactiveCommand.Create(() => ShowCardWindow(CardEditFlyout, null));
+            
             CellDoubleClickCommand = ReactiveCommand.Create<(object column, object row)>(
-                (tup) => ShowFlyout(CardEditFlyout, null, (int)tup.column, (int)tup.row));
+                (tup) => ShowCardWindow(CardEditFlyout, null, (int)tup.column, (int)tup.row));
+                       
+
+
 
             CreateColumnCommand = ReactiveCommand.CreateFromTask(() =>
                 InsertHeadAfterCommandExecute(Columns.Last()));
@@ -189,7 +235,7 @@ namespace Kamban.ViewModels
                 .ObserveOnDispatcher()
                 .Subscribe(_ => OnBoardChanged());
 
-            this.ObservableForProperty(w => w.CardEditFlyout.IsOpened)
+      /*     this.ObservableForProperty(w => w.CardEditFlyout.IsOpened)
                 .Where(x => x.Value == false && CardEditFlyout.Result == CardEditResult.Created)
                 .Subscribe(_ =>
                 {
@@ -205,10 +251,10 @@ namespace Kamban.ViewModels
                         targetCards.Max(x => x.Order) + 10;
 
                     Box.Cards.Add(card);
-                });
+                });  */
 
             mon.LogicVerbose($"{nameof(BoardEditViewModel)}.ctor finished");
-        }
+        } 
 
         private void OnBoardChanged()
         {
@@ -276,6 +322,38 @@ namespace Kamban.ViewModels
                 BoardVm = this,
                 Board = CurrentBoard
             });
+        }
+
+        private void ShowCardWindow(CardEditViewModel vm, ICard cvm, int column = 0, int row = 0)
+        {
+            vm.Initialize(new CardViewRequest
+            {
+                Box = this.Box,
+                ColumnId = column,
+                RowId = row,
+                Card = cvm as CardViewModel,
+                BoardVm = this,
+                Board = CurrentBoard
+            });
+
+            CardEditWindow hpw = new CardEditWindow(vm);
+            hpw.ShowDialog();
+
+            if (vm.Result == CardEditResult.Created)
+             {
+                    mon.LogicVerbose($"{nameof(BoardEditViewModel)}.{nameof(CardEditFlyout)} closed and card will be created");
+
+                    var card = CardEditFlyout.Card;
+                    var targetCards = cardList
+                        .Where(x => x.ColumnDeterminant == card.ColumnDeterminant
+                            && x.RowDeterminant == card.RowDeterminant)
+                        .ToList();
+
+                    card.Order = !targetCards.Any() ? 0 :
+                        targetCards.Max(x => x.Order) + 10;
+
+                    Box.Cards.Add(card);
+                };
         }
 
         public void Initialize(ViewRequest viewRequest)

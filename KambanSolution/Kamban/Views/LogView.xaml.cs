@@ -25,7 +25,9 @@ namespace Kamban.Views
             DataContext =  ViewModel;
         }
 
+        
         public IViewModel ViewModel { get; set; }
+        
 
         double IStretchedSizeView.StretchedWidth
         {

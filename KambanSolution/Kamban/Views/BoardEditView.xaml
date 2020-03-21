@@ -61,6 +61,10 @@
             <mykanban:Matrix.CardContextMenu>
                 <ContextMenu>
                     <MenuItem 
+                        Header="Edit"
+                        CommandParameter="{Binding CardOfContextMenu}"
+                        Command="{Binding CardEditWindowCommand}"/>
+                    <MenuItem 
                         Header="Move"
                         CommandParameter="{Binding CardOfContextMenu}"
                         Command="{Binding MoveCardCommand}"/>
@@ -72,12 +76,12 @@
             </mykanban:Matrix.CardContextMenu>
 
             <mykanban:Matrix.HeadContextMenu>
-                <ContextMenu>
-                    <MenuItem 
+                    <ContextMenu>
+                        <MenuItem 
                         Header="Edit Properties"
                         CommandParameter="{Binding HeadOfContextMenu}"
-                        Command="{Binding HeaderPropertyChanged}"/>
-                    <MenuItem
+                        Command="{Binding HeaderPropertyChangedWindow}"/>
+                        <MenuItem
                         Header="Insert Before"
                         CommandParameter="{Binding HeadOfContextMenu}"
                         Command="{Binding InsertHeadBeforeCommand}"/>
@@ -99,7 +103,7 @@
 
         </mykanban:Matrix>
 
-        <mah:Flyout Header="112233"
+        <!-- mah:Flyout Header="112233"
                     BorderThickness="5" 
                     BorderBrush="{DynamicResource AccentBaseColorBrush}"
                     Position="Top"
@@ -113,7 +117,7 @@
                     Content="{Binding CardEditFlyout}"
                     AnimateOpacity="True"
                     Width="600"
-                    />
+                    / -->
         
         <mah:Flyout Header="445566"
                     BorderThickness="5" 
@@ -131,7 +135,7 @@
                     Width="600"
                     />
 
-        <mah:Flyout Header="112233"
+        <!-- mah:Flyout Header="112233"
                     BorderThickness="5" 
                     BorderBrush="{DynamicResource AccentBaseColorBrush}"
                     Position="Top"
@@ -145,7 +149,7 @@
                     Content="{Binding HeaderPropertyFlyout}"
                     AnimateOpacity="True"
                     Width="600"
-                    />
+                    /-->
 
     </Grid>
     </ScrollViewer>

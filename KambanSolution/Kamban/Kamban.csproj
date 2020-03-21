@@ -64,6 +64,8 @@
       <PackagePath></PackagePath>
     </None>
     <Page Include="**\*.xaml" SubType="Designer" Generator="MSBuild:UpdateDesignTimeXaml" Exclude="App.xaml" />
+    <None Remove="Views\CardEditWindow.xaml" />
+    <None Remove="Views\HeaderPropertyWindow.xaml" />
     <None Remove="Views\LogView.xaml" />
     <Compile Update="**\*.xaml.cs" SubType="Code" DependentUpon="%(Filename)" />
 
@@ -90,7 +92,21 @@
     <ProjectReference Include="..\Kamban.Templates\Kamban.Templates.csproj" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Update="Views\HeaderPropertyWindow - Kopieren.xaml.cs">
+      <DependentUpon>HeaderPropertyWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Update="Views\HeaderPropertyWindow.xaml.cs">
+      <DependentUpon>HeaderPropertyWindow.xaml</DependentUpon>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Page Update="Views\CardEditWindow.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Update="Views\LogView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Update="Views\HeaderPropertyWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
     </Page>
   </ItemGroup>

@@ -74,14 +74,8 @@
 
   <ItemGroup>
     <PackageReference Include="AutoMapper" Version="9.0.0" />
-<<<<<<< HEAD
-    <PackageReference Include="DynamicData" Version="6.14.3" />
-    <PackageReference Include="gong-wpf-dragdrop" Version="2.0.4" />
-=======
     <PackageReference Include="DynamicData" Version="6.14.8" />
     <PackageReference Include="gong-wpf-dragdrop" Version="2.2.0" />
->>>>>>> c43e4723168cea6f9548aa52f43f6b125b3d68d3
-    <PackageReference Include="MahApps.Metro.IconPacks" Version="2.3.0" />
     <PackageReference Include="Monik.Common" Version="1.0.4" />
     <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
     <PackageReference Include="Ui.Wpf.Common" Version="1.0.34" />

@@ -66,14 +66,21 @@ namespace Kamban.ViewModels
         {
             HeaderSaveCommand = ReactiveCommand.Create(HeaderSaveCommandExecute );
             HeaderCancelCommand = ReactiveCommand.Create(HeaderCancelCommandExecute);
+            this.CanClose = true;
         }
+        public HeaderPropertyViewModel(ViewRequest viewRequest) : this()
+        {         
+            Initialize(viewRequest);
+        }
+
+        
 
         private void EnterCommandExecute()
         {
             throw new NotImplementedException();
         }
 
-        private void HeaderCancelCommandExecute()
+        void HeaderCancelCommandExecute()
         {
             // restore previous Values
             Header.LimitSet = OldLimitSet;
@@ -83,7 +90,7 @@ namespace Kamban.ViewModels
             IsOpened = false;
         }
 
-        private void HeaderSaveCommandExecute()
+        void HeaderSaveCommandExecute()
         {
             IsOpened = false;
         }

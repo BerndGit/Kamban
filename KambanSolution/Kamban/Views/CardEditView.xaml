@@ -109,7 +109,7 @@
             FontSize="16"
             TabIndex="2"
             Background="{Binding Background}"
-            BindableSelectionStart="{Binding BodySelectionStart, Mode=TwoWay}"
+            BindableSelectionStart="{Binding BodySelectionStart, Mode=TwoWay}" 
             Grid.Row="3"
             MaxHeight="400"
             VerticalScrollBarVisibility="Auto"
@@ -128,9 +128,12 @@
                     Orientation="Horizontal"
                     HorizontalAlignment="Right">
             <Button Content="Save" Width="60" Margin="10" Padding="5" TabIndex="3"
-                    Command="{Binding SaveCommand}" Background="{Binding Background}"/>
+                    Background="{Binding Background}"
+                    Click="ButtonSave_Click"
+                    />
             <Button Content="Cancel" Width="60" Margin="10" Padding="5"
-                    Command="{Binding CancelCommand}" Background="{Binding Background}"/>
+                    Background="{Binding Background}"
+                    Click="ButtonCancel_Click"/>
         </StackPanel>
 
     </Grid>
